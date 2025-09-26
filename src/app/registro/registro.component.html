@@ -1,0 +1,32 @@
+<div class="register-container">
+  <h2>Crie sua conta</h2>
+  <form (ngSubmit)="onRegister()" #registerForm="ngForm">
+<label>
+  Nome:
+  <input type="text" [(ngModel)]="novoUsuario.nome" name="nome" required />
+</label>
+
+<label>
+  Email:
+  <input type="email" [(ngModel)]="novoUsuario.email" name="email" required />
+</label>
+
+<label>
+  Senha:
+  <input type="password" [(ngModel)]="novoUsuario.senha" name="senha" required />
+</label>
+
+    <div class="role-checkboxes">
+      <label>
+        <input type="checkbox" name="empregado" [(ngModel)]="roles.empregado">
+        Empregado
+      </label>
+      <label>
+        <input type="checkbox" name="empregador" [(ngModel)]="roles.empregador">
+        Empregador
+      </label>
+    </div>
+
+    <button type="submit">Registrar</button>
+  </form>
+</div>

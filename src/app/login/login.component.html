@@ -1,0 +1,56 @@
+<div class="login-container">
+  <!-- Esquerda: Card do Form -->
+  <div class="login-form">
+    <mat-card>
+      <mat-card-header>
+        <h2>Faça Login</h2>
+      </mat-card-header>
+      <mat-card-content>
+        <form #loginForm="ngForm" (submit)="login()">
+          <mat-error *ngIf="!loginValid">Email ou Senha Inválidos</mat-error>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              [(ngModel)]="user.email"
+              placeholder="Email"
+              name="email"
+              required
+            />
+            <mat-icon matSuffix>email</mat-icon>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Senha</mat-label>
+            <input
+              type="password"
+              matInput
+              [(ngModel)]="user.senha"
+              placeholder="Password"
+              name="senha"
+              required
+            />
+
+            <mat-icon matSuffix>lock</mat-icon>
+          </mat-form-field>
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="!loginForm.form.valid"
+          >
+            Login
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Direita: Branding -->
+  <div class="login-branding">
+    <h1>
+      WorkMap
+      <mat-icon class="mat-icon-large">map_search</mat-icon>
+    </h1>
+    <p>Sua solução para empregos do seu jeito</p>
+  </div>
+</div>
