@@ -1,1 +1,42 @@
-<p>empregado works!</p>
+
+
+<google-map
+  [center]="center"
+  [zoom]="zoom"
+  height="500px"
+  width="100%">
+
+  <map-marker
+    [position]="center"
+    [title]="'Você está aqui'"
+    [options]="{ icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' }">
+  </map-marker>
+
+  <map-circle
+    [center]="center"
+    [radius]="raio * 1000"  
+    [options]="{
+      strokeColor: '#1E90FF',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#1E90FF',
+      fillOpacity: 0.15
+    }">
+  </map-circle>
+
+
+  <map-marker
+    *ngFor="let vaga of vagas"
+    [position]="vaga.posicao"
+    [title]="vaga.titulo"
+    [options]="{ icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' }"
+    (mapClick)="abrirInfoWindow(marker, vaga)"
+    #marker="mapMarker">
+  </map-marker>
+
+
+  <map-info-window>
+    <h3>{{ infoContent.titulo }}</h3>
+    <p>{{ infoContent.descricao }}</p>
+  </map-info-window>
+</google-map>
