@@ -1,0 +1,165 @@
+/* Variáveis de Cor para fácil manutenção */
+:host {
+  --cor-principal: #ffd700;
+  /* Amarelo */
+  --cor-fundo: #f4f4f4;
+  --cor-card: #ffffff;
+  --cor-texto-principal: #333;
+  --cor-texto-secundario: #555;
+  --cor-sombra: rgba(0, 0, 0, 0.08);
+}
+
+.perfil-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--cor-fundo);
+  font-family: 'Roboto', sans-serif;
+}
+
+/* --- Barra Lateral --- */
+.sidebar {
+  width: 90px;
+  background-color: var(--cor-principal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  flex-shrink: 0;
+
+  .logo-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--cor-texto-principal);
+  }
+
+  .voltar-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--cor-texto-principal);
+
+    span {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+  }
+}
+
+/* --- Conteúdo Principal --- */
+.perfil-content {
+  flex-grow: 1;
+  padding: 2rem 4rem;
+}
+
+.perfil-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--cor-texto-secundario);
+  margin-bottom: 2rem;
+}
+
+.card-principal-wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -60px;
+  /* Metade da altura para sobrepor */
+  z-index: 2;
+  border: 4px solid var(--cor-fundo);
+
+  mat-icon {
+    font-size: 80px;
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.info-card-principal {
+  width: 100%;
+  max-width: 600px;
+  padding-top: 70px;
+  /* Espaço para o avatar */
+  text-align: center;
+
+  mat-card-content p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .avaliacao {
+    margin-top: 1rem;
+    color: var(--cor-principal);
+  }
+}
+
+.info-cards-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.info-card {
+  mat-card-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  mat-card-content p {
+    line-height: 1.6;
+    color: var(--cor-texto-secundario);
+  }
+}
+
+/* --- Estilos para Edição --- */
+
+.perfil-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.perfil-title {
+  margin-bottom: 0;
+  /* Remove a margem original para alinhar com o botão */
+}
+
+/* Deixa o textarea ocupar todo o espaço do card */
+mat-form-field {
+  width: 100%;
+}
+
+/* Container para os botões de Salvar/Cancelar */
+.botoes-acao {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.info-cards-container {
+  /* Adiciona um espaçamento na parte de baixo do grid *
+  margin-bottom: 2rem;
+}
+
+mat-list-item {
+  /* Melhora o espaçamento e a aparência dos itens da lista */
+  margin-bottom: 8px;
+}

@@ -1,0 +1,146 @@
+<div class="workmap-container">
+  <aside class="sidebar">
+    <div class="sidebar__section">
+      <button
+        class="sidebar__button"
+        (click)="filtrosVisiveis = !filtrosVisiveis"
+        title="Abrir filtros de busca"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="sidebar__icon"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+          />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="sidebar__section sidebar__section--bottom">
+      <button class="sidebar__button" title="Ver perfil" (click)="verPerfil()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="sidebar__icon sidebar__icon--profile"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+      <span class="sidebar__label">Perfil</span>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="filter-panel" [class.is-visible]="filtrosVisiveis">
+      <div class="filter-panel__header">
+        <h2 class="filter-panel__title">Filtros de Busca</h2>
+        <button
+          class="filter-panel__close-btn"
+          (click)="filtrosVisiveis = false"
+          title="Fechar filtros"
+        >
+          ×
+        </button>
+      </div>
+      <div class="filter-panel__body">
+        <label class="filter-panel__label">Raio de Pesquisa (km)</label>
+        <div class="range-slider">
+          <input
+            type="range"
+            min="1"
+            max="10"
+            [(ngModel)]="raio"
+            class="range-slider__input"
+          />
+          <span class="range-slider__value">{{ raio }} km</span>
+        </div>
+      </div>
+      <button
+        class="filter-panel__apply-btn"
+        (click)="obterLocalizacaoUsuario()"
+      >
+        Atualizar Busca
+      </button>
+    </div>
+
+    <main class="map-area">
+      <google-map [center]="center" [zoom]="zoom" height="100%" width="100%">
+        <map-marker
+          [position]="center"
+          [title]="'Você está aqui'"
+          [options]="{
+            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+          }"
+        >
+        </map-marker>
+
+        <map-circle
+          [center]="center"
+          [radius]="raio * 1000"
+          [options]="{
+            strokeColor: '#1E90FF',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#1E90FF',
+            fillOpacity: 0.15
+          }"
+        >
+        </map-circle>
+
+        <map-marker
+          *ngFor="let vaga of vagas"
+          [position]="vaga.posicao"
+          [title]="vaga.titulo"
+          [options]="{
+            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+          }"
+          (mapClick)="abrirInfoWindow(marker, vaga)"
+          #marker="mapMarker"
+        >
+        </map-marker>
+
+        <map-info-window>
+          <div class="info-window">
+            <h3 class="info-window__title">{{ infoContent.titulo }}</h3>
+            <p class="info-window__desc">{{ infoContent.descricao }}</p>
+
+            <button
+              class="info-window__button"
+              (click)="candidatar(usuarioLogado.id, infoContent.id)"
+            >
+              Candidatar-se
+            </button>
+          </div>
+        </map-info-window>
+      </google-map>
+    </main>
+
+    <footer class="footer">
+      <p class="footer__copyright">
+        WorkMap - © 2025 | Todos os Direitos Reservados.
+      </p>
+      <div class="footer__socials">
+        <a href="#" class="footer__social-link" title="Facebook">F</a>
+        <a href="#" class="footer__social-link" title="LinkedIn">L</a>
+        <a href="#" class="footer__social-link" title="Instagram">I</a>
+      </div>
+    </footer>
+  </div>
+</div>

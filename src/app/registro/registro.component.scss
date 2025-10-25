@@ -1,0 +1,139 @@
+/* Importação de fonte removida do CSS para ser adicionada no HTML/link */
+
+.register-container {
+  max-width: 400px;
+  /* Margem vertical ajustada */
+  margin: 4rem auto;
+  /* Padding ajustado para ser mais generoso */
+  padding: 2.5rem;
+  background: #ffffff; /* Fundo branco puro */
+  border-radius: 16px; /* Borda mais suave */
+  /* Sombra mais sutil e moderna */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+  color: #333333; /* Cor de texto principal mais escura */
+}
+
+/* --- Título (h2) --- */
+.register-container h2 {
+  text-align: center;
+  /* Margem inferior aumentada */
+  margin-bottom: 2rem;
+  /* Fonte um pouco maior e mais forte */
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b; /* Título com cor mais forte */
+}
+
+/* --- Formulário e Grupos de Campo --- */
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  /* Espaçamento entre campos ligeiramente maior */
+  gap: 1.5rem;
+}
+
+.register-container .form-group,
+.register-container .role-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Rótulos (Labels) --- */
+.register-container label {
+  font-weight: 600;
+  color: #475569; /* Cor do rótulo sutilmente mais clara */
+  margin-bottom: 0.4rem; /* Mais espaço entre label e input */
+  font-size: 0.95rem; /* Rótulo um pouco menor para clareza */
+}
+
+/* --- Campos de Input (Texto, Email, Senha) --- */
+.register-container input[type='text'],
+.register-container input[type='email'],
+.register-container input[type='password'] {
+  padding: 0.8rem 1rem; /* Padding interno mais generoso */
+  border: 1px solid #e2e8f0; /* Borda mais clara */
+  border-radius: 10px; /* Borda mais arredondada */
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.register-container input:focus {
+  border-color: #3b82f6; /* Azul primário mais vivo */
+  /* Adiciona uma leve sombra ao focar para um efeito mais profissional */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.register-container input::placeholder {
+  color: #94a3b8; /* Cor do placeholder mais discreta */
+}
+
+/* --- Grupo de Funções (Roles) --- */
+.register-container .role-group {
+  /* Fundo sutilmente alterado */
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 12px;
+  /* Linha fina para separar o grupo */
+  border: 1px solid #e2e8f0;
+
+  p {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+
+  label {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem; /* Espaço entre checkbox e texto ligeiramente maior */
+    color: #475569;
+    margin-bottom: 0.5rem; /* Espaço entre as checkboxes */
+  }
+
+  label:last-child {
+    margin-bottom: 0;
+  }
+
+  input[type="checkbox"] {
+    /* Estilização para o checkbox (opcional, requer mais CSS para consistência) */
+    transform: scale(1.1);
+  }
+}
+
+/* --- Mensagens de Erro --- */
+.register-container .error {
+  color: #ef4444; /* Vermelho de erro mais vibrante */
+  font-size: 0.8rem; /* Fonte um pouco menor */
+  margin-top: 0.4rem; /* Mais espaço acima da mensagem */
+}
+
+/* --- Botão de Submissão (Registrar) --- */
+.register-container button {
+  margin-top: 1rem; /* Mais espaço antes do botão */
+  padding: 0.85rem;
+  font-size: 1.05rem; /* Fonte ligeiramente maior */
+  font-weight: 700; /* Mais peso na fonte */
+  color: white;
+  background: #3b82f6; /* Azul primário (o mesmo do focus) */
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+  letter-spacing: 0.5px; /* Leve espaçamento entre letras */
+
+  &:disabled {
+    background: #cbd5e1; /* Cinza claro para desabilitado */
+    color: #94a3b8; /* Cor do texto mais clara */
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    background: #2563eb; /* Azul um pouco mais escuro no hover */
+    /* Leve elevação no hover */
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+  }
+}

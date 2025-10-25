@@ -1,0 +1,122 @@
+<div class="perfil-container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <mat-icon class="logo-icon">location_on</mat-icon>
+    </div>
+    <div class="sidebar-footer">
+      <button
+        mat-icon-button
+        class="voltar-btn"
+        (click)="voltar()"
+        aria-label="Voltar"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="perfil-content" *ngIf="empregado; else notFound">
+    <div class="perfil-header">
+      <h2 class="perfil-title">Perfil WorkMap do usuário:</h2>
+      <button
+        mat-stroked-button
+        color="primary"
+        *ngIf="!modoEdicao"
+        (click)="entrarModoEdicao()"
+      >
+        <mat-icon>edit</mat-icon>
+        Editar Perfil
+      </button>
+    </div>
+
+    <div class="card-principal-wrapper">
+      <div class="avatar">
+        <mat-icon>person</mat-icon>
+      </div>
+      <mat-card class="info-card-principal">
+        <mat-card-content>
+          <p><strong>Nome:</strong> {{ empregado.nome }}</p>
+          <p><strong>Idade:</strong> 27 anos</p>
+          <p><strong>Cidade:</strong> Sorocaba</p>
+        </mat-card-content>
+        <div class="avaliacao">
+          <mat-icon>star</mat-icon>
+          <mat-icon>star</mat-icon>
+          <mat-icon>star</mat-icon>
+          <mat-icon>star</mat-icon>
+          <mat-icon>star_border</mat-icon>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="info-cards-container">
+      <mat-card class="info-card">
+        <mat-card-title>Descrição:</mat-card-title>
+        <mat-card-content>
+          <p *ngIf="!modoEdicao">
+            {{ empregado.descricao || "Nenhuma descrição informada." }}
+          </p>
+          <mat-form-field *ngIf="modoEdicao" appearance="outline">
+            <mat-label>Sua descrição profissional</mat-label>
+            <textarea
+              matInput
+              [(ngModel)]="descricaoEditavel"
+              rows="5"
+            ></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="info-card">
+        <mat-card-title>Experiência:</mat-card-title>
+        <mat-card-content>
+          <p *ngIf="!modoEdicao">
+            {{ empregado.experiencia || "Nenhuma experiência informada." }}
+          </p>
+          <mat-form-field *ngIf="modoEdicao" appearance="outline">
+            <mat-label>Suas experiências</mat-label>
+            <textarea
+              matInput
+              [(ngModel)]="experienciaEditavel"
+              rows="5"
+            ></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card class="info-card">
+      <mat-card-title>Vagas Aplicadas</mat-card-title>
+      <mat-card-content>
+        <div *ngIf="vagasAplicadas.length > 0; else semVagas">
+          <mat-list role="list">
+            <mat-list-item *ngFor="let vaga of vagasAplicadas" role="listitem">
+              <mat-icon matListItemIcon>work</mat-icon>
+              <div matListItemTitle>{{ vaga.titulo }}</div>
+              <div matListItemLine>{{ vaga.nomeEmpresa }}</div>
+            </mat-list-item>
+          </mat-list>
+        </div>
+        <ng-template #semVagas>
+          <p>Você ainda não se aplicou a nenhuma vaga.</p>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <div *ngIf="modoEdicao" class="botoes-acao">
+      <button mat-button color="warn" (click)="cancelarEdicao()">
+        Cancelar
+      </button>
+      <button mat-raised-button color="primary" (click)="salvarAlteracoes()">
+        Salvar Alterações
+      </button>
+    </div>
+  </main>
+
+  <ng-template #notFound>
+    <main class="perfil-content">
+      <h2 class="perfil-title">Usuário não encontrado.</h2>
+    </main>
+  </ng-template>
+</div>

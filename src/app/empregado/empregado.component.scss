@@ -1,0 +1,289 @@
+/* Define as variáveis de design para fácil customização */
+:root {
+  --primary-color: #facc15; // Amarelo principal
+  --dark-bg: #111827;      // Preto/Cinza escuro para fundos
+  --dark-text: #1f2937;    // Cor de texto principal
+  --light-text: #ffffff;   // Cor de texto claro
+  --gray-text: #6b7280;    // Cor de texto secundário
+  --border-radius: 12px;
+  --sidebar-width: 96px;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset básico e estilos do container principal */
+.workmap-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  overflow: hidden;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative; /* Contexto para o painel de filtros */
+}
+
+/* --- Barra Lateral --- */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0;
+  box-shadow: var(--shadow-md);
+  z-index: 30;
+  flex-shrink: 0;
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+    &--bottom {
+      padding-bottom: 1rem;
+    }
+  }
+
+  &__button {
+    background-color: var(--dark-bg);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-out;
+
+    &:hover {
+      background-color: #374151; // Cinza mais escuro
+      transform: scale(1.1);
+    }
+  }
+
+  &__icon {
+    width: 30px;
+    height: 30px;
+    color: var(--primary-color); // Cor para SVGs com 'currentColor'
+
+    &--profile {
+       color: var(--light-text);
+    }
+  }
+
+  &__label {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--dark-text);
+  }
+}
+
+/* --- Painel de Filtros --- */
+.filter-panel {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  width: clamp(300px, 90%, 380px); // Responsivo
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-xl);
+  padding: 1.5rem;
+  z-index: 20;
+  opacity: 0;
+  transform: translateX(-20px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    color: var(--dark-text);
+  }
+
+  &__close-btn {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--gray-text);
+    transition: color 0.2s;
+    &:hover { color: var(--dark-text); }
+  }
+
+  &__body {
+    margin-bottom: 1.5rem;
+  }
+
+  &__label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--dark-text);
+  }
+
+  &__apply-btn {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark-text);
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+
+    &:hover {
+      background-color: #fde047; // Amarelo mais claro
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* --- Estilo Customizado para o Input Range --- */
+.range-slider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  &__input {
+    flex-grow: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: #3a6ac9;
+    border-radius: 5px;
+    outline: none;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid rgb(0, 0, 0);
+      box-shadow: var(--shadow-md);
+    }
+
+    &::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  &__value {
+    font-weight: 600;
+    color: var(--gray-text);
+    min-width: 50px;
+    text-align: right;
+  }
+}
+
+/* --- Mapa e Rodapé --- */
+.map-area {
+  flex-grow: 1;
+  background-color: #e5e7eb; /* Cor de fundo enquanto o mapa carrega */
+}
+
+.google-map {
+  height: 10%;
+  width: 10%;
+}
+
+.footer {
+  background-color: var(--dark-bg);
+  color: #9ca3af;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  z-index: 10;
+  flex-shrink: 0;
+
+  &__copyright {
+    font-size: 0.875rem;
+  }
+
+  &__socials {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__social-link {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover {
+      color: var(--light-text);
+    }
+  }
+
+  /* --- Estilo do InfoWindow --- */
+
+
+}
+
+.info-window {
+  padding: 0.5rem 0.25rem;
+  max-width: 260px;
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dark-text);
+    margin-bottom: 0.25rem;
+  }
+
+  &__desc {
+    font-size: 0.875rem;
+    color: var(--gray-text);
+    margin-bottom: 0.75rem;
+  }
+
+  &__button {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    font-weight: 700;
+    color: var(--dark-text);
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+
+    &:hover {
+      background-color: #fde047;
+      transform: translateY(-2px);
+    }
+  }
+}
