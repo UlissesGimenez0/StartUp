@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Empregado } from './Model/empregado.type';
 import { Empregador } from './Model/empregador.type';
 import { Vaga, VagasFake } from './Model/vaga.type';
+import { Subject } from 'rxjs'; // <-- 1. IMPORTAR Subject
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,12 @@ import { Vaga, VagasFake } from './Model/vaga.type';
 export class StorageService {
 
   private readonly DB_KEY = 'workmapDB';
+
+  // 2. Criar um Subject privado para notificar mudanças
+  private dbUpdated$ = new Subject<string>();
+
+  // 3. Expor o Subject como um Observable público
+  public onDBUpdate$ = this.dbUpdated$.asObservable();
 
   /**
    * Obtém todo o banco de dados do LocalStorage.
@@ -19,13 +26,12 @@ export class StorageService {
     if (db) {
       return JSON.parse(db);
     } else {
-      // Se o banco de dados não existir, cria uma estrutura inicial
       const initialDB = {
         empregados: [],
         empregadores: [],
         vagas: VagasFake // Começa com as vagas fakes
       };
-      this.saveDB(initialDB);
+      this.saveDB(initialDB, 'init'); // Salva e notifica
       return initialDB;
     }
   }
@@ -33,9 +39,12 @@ export class StorageService {
   /**
    * Salva o objeto completo do banco de dados no LocalStorage.
    * @param db O objeto do banco de dados a ser salvo.
+   * @param scope O tipo de dados que foi alterado (ex: 'vagas', 'empregados')
    */
-  private saveDB(db: any): void {
+  private saveDB(db: any, scope: string): void {
     localStorage.setItem(this.DB_KEY, JSON.stringify(db));
+    // 4. Notificar todos os inscritos sobre a mudança
+    this.dbUpdated$.next(scope);
   }
 
   // ---------------- EMPREGADOS ----------------
@@ -50,7 +59,7 @@ export class StorageService {
       db.empregados.push(empregado); // Adiciona
     }
 
-    this.saveDB(db);
+    this.saveDB(db, 'empregados'); // <-- 5. Especificar o escopo
   }
 
   getEmpregadoById(id: number): Empregado | undefined {
@@ -74,8 +83,7 @@ export class StorageService {
     } else {
       db.empregadores.push(empregador); // Adiciona
     }
-
-    this.saveDB(db);
+    this.saveDB(db, 'empregadores'); // <-- 5. Especificar o escopo
   }
 
   getEmpregadores(): Empregador[] {
@@ -88,7 +96,7 @@ export class StorageService {
   salvarVagas(vagas: Vaga[]) {
     const db = this.getDB();
     db.vagas = vagas;
-    this.saveDB(db);
+    this.saveDB(db, 'vagas'); // <-- 5. Especificar o escopo
   }
 
   getVagas(): Vaga[] {
@@ -104,10 +112,9 @@ export class StorageService {
       if (!vaga.candidatos) {
         vaga.candidatos = [];
       }
-      // Garante que o mesmo empregado não se candidate duas vezes
       if (!vaga.candidatos.includes(empregadoId)) {
         vaga.candidatos.push(empregadoId);
-        this.saveDB(db);
+        this.saveDB(db, 'vagas'); // <-- 5. Especificar o escopo
       }
     }
   }
@@ -124,15 +131,6 @@ export class StorageService {
     return db.empregados.filter((e: Empregado) => vaga.candidatos.includes(e.id));
   }
 
-  // app/storage.service.ts
-
-// ... (dentro da classe StorageService, depois do método getCandidatos)
-
-  /**
-   * Encontra todas as vagas às quais um empregado se candidatou.
-   * @param empregadoId O ID do empregado.
-   * @returns Uma lista de vagas.
-   */
   getVagasAplicadas(empregadoId: number): Vaga[] {
     const db = this.getDB();
     // Filtra a lista de vagas, retornando apenas aquelas que incluem o ID do empregado

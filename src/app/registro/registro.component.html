@@ -1,54 +1,103 @@
-<div class="register-container">
-  <h2>Crie sua conta</h2>
+<div class="registro-page-wrapper">
+  <div class="register-container">
+    <h2>Crie sua conta</h2>
 
-  <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
-    <!-- Nome -->
-    <div class="form-group">
-      <label for="nome">Nome</label>
-      <input id="nome" type="text" formControlName="nome" placeholder="Seu nome completo" />
-      <small class="error" *ngIf="getErrorMessage('nome')">{{ getErrorMessage('nome') }}</small>
-    </div>
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input
+          id="nome"
+          type="text"
+          formControlName="nome"
+          placeholder="Seu nome completo"
+        />
+        <small class="error" *ngIf="getErrorMessage('nome')">{{
+          getErrorMessage("nome")
+        }}</small>
+      </div>
 
-    <!-- Email -->
-    <div class="form-group">
-      <label for="email">E-mail</label>
-      <input id="email" type="email" formControlName="email" placeholder="exemplo@email.com" />
-      <small class="error" *ngIf="getErrorMessage('email')">{{ getErrorMessage('email') }}</small>
-    </div>
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="exemplo@email.com"
+        />
+        <small class="error" *ngIf="getErrorMessage('email')">{{
+          getErrorMessage("email")
+        }}</small>
+      </div>
 
-    <!-- Senha -->
-    <div class="form-group">
-      <label for="senha">Senha</label>
-      <input id="senha" type="password" formControlName="senha" placeholder="Crie uma senha" />
-      <small class="error" *ngIf="getErrorMessage('senha')">{{ getErrorMessage('senha') }}</small>
-    </div>
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input
+          id="senha"
+          type="password"
+          formControlName="senha"
+          placeholder="Crie uma senha"
+        />
+        <small class="error" *ngIf="getErrorMessage('senha')">{{
+          getErrorMessage("senha")
+        }}</small>
+      </div>
 
-    <!-- Confirmar Senha -->
-    <div class="form-group">
-      <label for="confirmarSenha">Confirmar Senha</label>
-      <input id="confirmarSenha" type="password" formControlName="confirmarSenha" placeholder="Confirme sua senha" />
-      <small class="error" *ngIf="getErrorMessage('confirmarSenha')">
-        {{ getErrorMessage('confirmarSenha') }}
-      </small>
-    </div>
+      <div class="form-group">
+        <label for="confirmarSenha">Confirmar Senha</label>
+        <input
+          id="confirmarSenha"
+          type="password"
+          formControlName="confirmarSenha"
+          placeholder="Confirme sua senha"
+        />
+        <small class="error" *ngIf="getErrorMessage('confirmarSenha')">
+          {{ getErrorMessage("confirmarSenha") }}
+        </small>
+      </div>
+      <div class="form-group">
+        <label for="idade">Idade</label>
+        <input
+          id="idade"
+          type="text"
+          inputmode="numeric"
+          formControlName="idade"
+          placeholder="Sua idade"
+        />
+        <small class="error" *ngIf="getErrorMessage('idade')">{{
+          getErrorMessage("idade")
+        }}</small>
+      </div>
 
-    <!-- Funções -->
-    <div class="role-group" formGroupName="roles">
-      <p>Selecione sua função:</p>
-      <label>
-        <input type="checkbox" formControlName="empregado" /> Empregado
-      </label>
-      <label>
-        <input type="checkbox" formControlName="empregador" /> Empregador
-      </label>
-      <small class="error" *ngIf="registerForm.get('roles')?.errors?.['somenteUmSelecionado']">
-        Selecione apenas uma função.
-      </small>
-    </div>
+      <div class="form-group">
+        <label for="cidade">Cidade</label>
+        <input
+          id="cidade"
+          type="text"
+          formControlName="cidade"
+          placeholder="Sua cidade"
+        />
+        <small class="error" *ngIf="getErrorMessage('cidade')">{{
+          getErrorMessage("cidade")
+        }}</small>
+      </div>
 
-    <!-- Botão -->
-    <button type="submit" [disabled]="registerForm.invalid">
-      Registrar
-    </button>
-  </form>
+      <div class="role-group" formGroupName="roles">
+        <p>Selecione sua função:</p>
+        <label>
+          <input type="checkbox" formControlName="empregado" /> Empregado
+        </label>
+        <label>
+          <input type="checkbox" formControlName="empregador" /> Empregador
+        </label>
+        <small
+          class="error"
+          *ngIf="registerForm.get('roles')?.errors?.['somenteUmSelecionado']"
+        >
+          Selecione apenas uma função.
+        </small>
+      </div>
+
+      <button type="submit" [disabled]="registerForm.invalid">Registrar</button>
+    </form>
+  </div>
 </div>

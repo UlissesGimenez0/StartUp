@@ -1,35 +1,43 @@
-/* Importação de fonte removida do CSS para ser adicionada no HTML/link */
+
+/* --- NOVO WRAPPER DE PÁGINA --- */
+.registro-page-wrapper {
+  /* Usa o mesmo gradiente da tela de seleção */
+  background: linear-gradient(135deg, #FFD700 0%, #FFCC00 50%, #E6BE00 100%);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0; /* Espaçamento vertical para telas pequenas */
+  box-sizing: border-box;
+}
 
 .register-container {
-  max-width: 400px;
-  /* Margem vertical ajustada */
-  margin: 4rem auto;
-  /* Padding ajustado para ser mais generoso */
+  max-width: 450px; /* Um pouco mais largo */
+  width: 90%; /* Responsividade */
+  margin: 0; /* Resetamos a margem original de 4rem auto */
   padding: 2.5rem;
-  background: #ffffff; /* Fundo branco puro */
-  border-radius: 16px; /* Borda mais suave */
-  /* Sombra mais sutil e moderna */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  font-family: 'Inter', sans-serif;
-  color: #333333; /* Cor de texto principal mais escura */
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  /* MUDANÇA: Usando a fonte global Roboto */
+  font-family: 'Roboto', sans-serif;
+  color: #333333;
 }
 
 /* --- Título (h2) --- */
 .register-container h2 {
   text-align: center;
-  /* Margem inferior aumentada */
   margin-bottom: 2rem;
-  /* Fonte um pouco maior e mais forte */
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1e293b; /* Título com cor mais forte */
+  color: #1e293b;
 }
 
 /* --- Formulário e Grupos de Campo --- */
 .register-container form {
   display: flex;
   flex-direction: column;
-  /* Espaçamento entre campos ligeiramente maior */
   gap: 1.5rem;
 }
 
@@ -42,40 +50,39 @@
 /* --- Rótulos (Labels) --- */
 .register-container label {
   font-weight: 600;
-  color: #475569; /* Cor do rótulo sutilmente mais clara */
-  margin-bottom: 0.4rem; /* Mais espaço entre label e input */
-  font-size: 0.95rem; /* Rótulo um pouco menor para clareza */
+  color: #475569;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
 }
 
 /* --- Campos de Input (Texto, Email, Senha) --- */
 .register-container input[type='text'],
 .register-container input[type='email'],
 .register-container input[type='password'] {
-  padding: 0.8rem 1rem; /* Padding interno mais generoso */
-  border: 1px solid #e2e8f0; /* Borda mais clara */
-  border-radius: 10px; /* Borda mais arredondada */
+  padding: 0.8rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
   outline: none;
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .register-container input:focus {
-  border-color: #3b82f6; /* Azul primário mais vivo */
-  /* Adiciona uma leve sombra ao focar para um efeito mais profissional */
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  /* MUDANÇA: Cor de foco para preto (combinando com tema) */
+  border-color: #111;
+  /* MUDANÇA: Sombra de foco para amarelo */
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.4);
 }
 
 .register-container input::placeholder {
-  color: #94a3b8; /* Cor do placeholder mais discreta */
+  color: #94a3b8;
 }
 
 /* --- Grupo de Funções (Roles) --- */
 .register-container .role-group {
-  /* Fundo sutilmente alterado */
   background: #f8fafc;
   padding: 1.25rem;
   border-radius: 12px;
-  /* Linha fina para separar o grupo */
   border: 1px solid #e2e8f0;
 
   p {
@@ -89,9 +96,9 @@
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.6rem; /* Espaço entre checkbox e texto ligeiramente maior */
+    gap: 0.6rem;
     color: #475569;
-    margin-bottom: 0.5rem; /* Espaço entre as checkboxes */
+    margin-bottom: 0.5rem;
   }
 
   label:last-child {
@@ -99,41 +106,45 @@
   }
 
   input[type="checkbox"] {
-    /* Estilização para o checkbox (opcional, requer mais CSS para consistência) */
     transform: scale(1.1);
+    /* MUDANÇA: Cor do checkbox para combinar */
+    accent-color: #111;
   }
 }
 
 /* --- Mensagens de Erro --- */
 .register-container .error {
-  color: #ef4444; /* Vermelho de erro mais vibrante */
-  font-size: 0.8rem; /* Fonte um pouco menor */
-  margin-top: 0.4rem; /* Mais espaço acima da mensagem */
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
 }
 
 /* --- Botão de Submissão (Registrar) --- */
 .register-container button {
-  margin-top: 1rem; /* Mais espaço antes do botão */
+  margin-top: 1rem;
   padding: 0.85rem;
-  font-size: 1.05rem; /* Fonte ligeiramente maior */
-  font-weight: 700; /* Mais peso na fonte */
-  color: white;
-  background: #3b82f6; /* Azul primário (o mesmo do focus) */
+  font-size: 1.05rem;
+  font-weight: 700;
+  /* MUDANÇA: Cor do botão para preto/amarelo */
+  color: #FFD700;
+  background: #111;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
-  letter-spacing: 0.5px; /* Leve espaçamento entre letras */
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+  letter-spacing: 0.5px;
 
   &:disabled {
-    background: #cbd5e1; /* Cinza claro para desabilitado */
-    color: #94a3b8; /* Cor do texto mais clara */
+    background: #cbd5e1;
+    color: #94a3b8;
     cursor: not-allowed;
   }
 
   &:not(:disabled):hover {
-    background: #2563eb; /* Azul um pouco mais escuro no hover */
-    /* Leve elevação no hover */
-    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    /* MUDANÇA: Hover mais escuro */
+    background: #333;
+    transform: translateY(-2px);
+    /* MUDANÇA: Sombra do hover para amarelo */
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
   }
 }

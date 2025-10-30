@@ -7,6 +7,8 @@
   --cor-texto-principal: #333;
   --cor-texto-secundario: #555;
   --cor-sombra: rgba(0, 0, 0, 0.08);
+  --dark-bg: #111827;
+  /* Preto (do dashboard) */
 }
 
 .perfil-container {
@@ -17,49 +19,98 @@
   font-family: 'Roboto', sans-serif;
 }
 
-/* --- Barra Lateral --- */
+/* --- Barra Lateral (ATUALIZADA) --- */
 .sidebar {
   width: 90px;
+  /* Largura igual ao dashboard */
   background-color: var(--cor-principal);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  /* Alinha logo no topo e botão embaixo */
   align-items: center;
-  padding: 1.5rem 0;
   flex-shrink: 0;
+}
 
-  .logo-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    color: var(--cor-texto-principal);
+.sidebar__section--top {
+  padding-top: 1.5rem;
+}
+
+.sidebar__section--bottom {
+  padding-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--cor-texto-principal);
+}
+
+/* Estilo do botão 'Voltar' (do dashboard) */
+.sidebar__button {
+  background-color: var(--dark-bg);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-out;
+
+  mat-icon {
+    color: var(--cor-principal);
   }
 
-  .voltar-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--cor-texto-principal);
-
-    span {
-      font-weight: 500;
-      font-size: 0.9rem;
-      margin-top: 4px;
-    }
+  &:hover {
+    background-color: #374151;
+    transform: scale(1.1);
   }
 }
+
+.sidebar__label {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--dark-bg);
+}
+
 
 /* --- Conteúdo Principal --- */
 .perfil-content {
   flex-grow: 1;
   padding: 2rem 4rem;
+  overflow-y: auto; /* Permite scroll se o conteúdo for grande */
+}
+
+.perfil-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* Botão 'Editar Perfil' (Stroked) */
+.perfil-header button[mat-stroked-button][color="primary"] {
+  color: var(--dark-bg);
+  border-color: var(--dark-bg);
+  font-weight: 600;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }
 
 .perfil-title {
   font-size: 1.5rem;
   font-weight: 400;
   color: var(--cor-texto-secundario);
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .card-principal-wrapper {
@@ -73,14 +124,13 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background-color: #333;
+  background-color: var(--cor-texto-principal);
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
   top: -60px;
-  /* Metade da altura para sobrepor */
   z-index: 2;
   border: 4px solid var(--cor-fundo);
 
@@ -95,7 +145,6 @@
   width: 100%;
   max-width: 600px;
   padding-top: 70px;
-  /* Espaço para o avatar */
   text-align: center;
 
   mat-card-content p {
@@ -115,6 +164,12 @@
   gap: 2rem;
 }
 
+/* Card de 'Vagas Aplicadas' (NOVO) */
+.info-card-vagas {
+  margin-top: 2rem;
+  grid-column: 1 / -1; /* Ocupa a largura total */
+}
+
 .info-card {
   mat-card-title {
     font-size: 1.2rem;
@@ -124,42 +179,42 @@
   mat-card-content p {
     line-height: 1.6;
     color: var(--cor-texto-secundario);
+
+    /* Preserva as quebras de linha (Enter) */
+    white-space: pre-wrap;
+
+    /* --- ATUALIZAÇÃO AQUI --- */
+    /* Quebra a linha de palavras muito longas */
+    overflow-wrap: break-word;
+    word-break: break-word; /* Adicionado para compatibilidade */
   }
 }
 
 /* --- Estilos para Edição --- */
 
-.perfil-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.perfil-title {
-  margin-bottom: 0;
-  /* Remove a margem original para alinhar com o botão */
-}
-
-/* Deixa o textarea ocupar todo o espaço do card */
 mat-form-field {
   width: 100%;
 }
 
-/* Container para os botões de Salvar/Cancelar */
 .botoes-acao {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
+  padding-bottom: 2rem; /* Espaço no final */
 }
 
-.info-cards-container {
-  /* Adiciona um espaçamento na parte de baixo do grid *
-  margin-bottom: 2rem;
+/* Botão 'Salvar Alterações' (Raised) */
+.botoes-acao button[mat-raised-button][color="primary"] {
+  background-color: var(--dark-bg);
+  color: var(--cor-principal);
+  font-weight: 600;
+
+  &:hover {
+    background-color: #374151;
+  }
 }
 
 mat-list-item {
-  /* Melhora o espaçamento e a aparência dos itens da lista */
   margin-bottom: 8px;
 }

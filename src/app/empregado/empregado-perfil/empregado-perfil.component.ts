@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'; // 1. IMPORTAR OnDestroy
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { StorageService } from '../../storage.service';
 import { Empregado } from '../../Model/empregado.type';
-import { Vaga } from '../../Model/vaga.type'; // <-- 1. IMPORTE A INTERFACE Vaga
+import { Vaga } from '../../Model/vaga.type';
+import { Subject, filter, takeUntil } from 'rxjs'; // 2. IMPORTAR Subject, filter, takeUntil
 
 // Importações do Angular Material e FormsModule
 import { MatCardModule } from '@angular/material/card';
@@ -12,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatListModule } from '@angular/material/list'; // <-- 2. IMPORTE O MatListModule
+import { MatListModule } from '@angular/material/list';
 
 @Component({
   selector: 'app-empregado-perfil',
@@ -25,19 +26,22 @@ import { MatListModule } from '@angular/material/list'; // <-- 2. IMPORTE O MatL
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatListModule // <-- 3. ADICIONE AOS IMPORTS
+    MatListModule
   ],
   templateUrl: './empregado-perfil.component.html',
   styleUrls: ['./empregado-perfil.component.scss']
 })
-export class EmpregadoPerfilComponent implements OnInit {
+export class EmpregadoPerfilComponent implements OnInit, OnDestroy { // 3. IMPLEMENTAR OnDestroy
 
   empregado: Empregado | undefined;
-  vagasAplicadas: Vaga[] = []; // <-- 4. CRIE A PROPRIEDADE
+  vagasAplicadas: Vaga[] = [];
   modoEdicao = false;
 
   descricaoEditavel = '';
   experienciaEditavel = '';
+
+  // 4. Subject para gerenciar a desinscrição
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -46,11 +50,37 @@ export class EmpregadoPerfilComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // 5. Carregar dados iniciais
+    this.carregarDadosDoPerfil();
+
+    // 6. Inscrever-se a atualizações do StorageService
+    this.storageService.onDBUpdate$
+      .pipe(
+        // Reagir se vagas (candidatura) ou empregados (edição de perfil) mudarem
+        filter(scope => scope === 'vagas' || scope === 'empregados'),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        console.log('Perfil: DB atualizado, recarregando dados...');
+        // Recarregar os dados do perfil
+        this.carregarDadosDoPerfil();
+      });
+  }
+
+  // 7. Implementar ngOnDestroy
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Busca os dados frescos do StorageService e atualiza a view.
+   */
+  private carregarDadosDoPerfil(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
       const id = +idParam;
       this.empregado = this.storageService.getEmpregadoById(id);
-      // <-- 5. BUSQUE AS VAGAS APLICADAS
       if (this.empregado) {
         this.vagasAplicadas = this.storageService.getVagasAplicadas(this.empregado.id);
       }
@@ -69,8 +99,10 @@ export class EmpregadoPerfilComponent implements OnInit {
     if (this.empregado) {
       this.empregado.descricao = this.descricaoEditavel;
       this.empregado.experiencia = this.experienciaEditavel;
+      // 8. Salvar (isso irá disparar o onDBUpdate$ e atualizar a UI)
       this.storageService.salvarEmpregado(this.empregado);
       this.modoEdicao = false;
+      // Não precisamos chamar carregarDadosDoPerfil() manualmente, o Observable fará isso.
     }
   }
 

@@ -1,6 +1,10 @@
+/* src/app/login/login.component.scss */
+
 .login-container {
   display: flex;
   min-height: 100vh;
+  /* Garante que a fonte Roboto seja usada */
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Esquerda: Form escuro */
@@ -9,25 +13,66 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
+  background: #1e1e1e;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 mat-card {
   max-width: 400px;
   width: 100%;
-  padding: 20px;
+  padding: 2rem 2.5rem; /* Padding ajustado */
   border-radius: 12px;
-  background: #1e1e1e; /* cinza bem escuro */
+  background: #2a2a2a; /* Ligeiramente mais claro que o fundo */
   color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); /* Sombra mais forte */
+}
+
+mat-card-header {
+  padding: 0; /* Remove padding padrão para centralizar o título */
 }
 
 mat-card-header h2 {
-    align-items: center;
+  width: 100%; /* Garante que o text-align funcione */
   text-align: center;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #ffd600; 
+  color: #ffd600;
+  margin-bottom: 1.5rem; /* Espaço abaixo do título */
+}
+
+mat-card-content {
+  /* --- Ajustes para Inputs em Tema Escuro --- */
+
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem; /* Espaçamento entre os campos */
+  }
+
+  /* Cor do Label e Ícone */
+  :host ::ng-deep .mat-form-field-label,
+  :host ::ng-deep .mat-form-field-label.mat-focused,
+  :host ::ng-deep .mat-form-field .mat-icon {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Cor do Input (texto digitado) */
+  :host ::ng-deep .mat-input-element {
+    color: #ffffff;
+  }
+
+  /* Cor da linha (underline) */
+  :host ::ng-deep .mat-form-field-underline .mat-form-field-ripple,
+  :host ::ng-deep .mat-form-field-underline {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Cor da linha (underline) quando focado */
+  :host ::ng-deep .mat-form-field.mat-focused .mat-form-field-ripple {
+     background-color: #ffd600; /* Amarelo no foco */
+  }
+
+  /* --- Fim dos Ajustes de Tema --- */
 }
 
 mat-error {
@@ -36,7 +81,7 @@ mat-error {
   margin-bottom: 10px;
 }
 
-button {
+button[mat-raised-button] { /* Mais específico */
   width: 100%;
   padding: 12px;
   border-radius: 8px;
@@ -45,10 +90,18 @@ button {
   color: #000;
   font-weight: bold;
   transition: 0.3s ease;
+  margin-top: 1rem; /* Espaço acima do botão */
 }
 
-button:hover {
+button[mat-raised-button]:not(:disabled):hover {
   background: #ffc107;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 214, 0, 0.3);
+}
+
+button[mat-raised-button]:disabled {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 /* Direita: Branding amarelo */
@@ -61,15 +114,49 @@ button:hover {
   justify-content: center;
   align-items: center;
   text-align: center;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 .login-branding h1 {
   font-size: 3rem;
   font-weight: 800;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Espaço entre texto e ícone */
+}
+
+/* Estiliza o ícone no HTML */
+.mat-icon-large {
+   font-size: 3.5rem;
+   width: 3.5rem;
+   height: 3.5rem;
 }
 
 .login-branding p {
   font-size: 1.2rem;
   opacity: 0.9;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 800px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  /* Faz o branding vir primeiro no mobile */
+  .login-branding {
+    flex: 0 0 30vh; /* Ocupa 30% da altura da tela */
+    min-height: 250px;
+    order: 1; /* Vem primeiro */
+  }
+
+  .login-form {
+    flex: 1; /* Ocupa o resto */
+    order: 2; /* Vem depois */
+    /* Remove o alinhamento vertical para o formulário preencher */
+    align-items: flex-start;
+    padding-top: 3rem;
+  }
 }

@@ -48,6 +48,7 @@
   </aside>
 
   <div class="main-content">
+
     <div class="filter-panel" [class.is-visible]="filtrosVisiveis">
       <div class="filter-panel__header">
         <h2 class="filter-panel__title">Filtros de Busca</h2>
@@ -80,61 +81,136 @@
       </button>
     </div>
 
-    <main class="map-area">
-      <google-map [center]="center" [zoom]="zoom" height="100%" width="100%">
-        <map-marker
-          [position]="center"
-          [title]="'Você está aqui'"
-          [options]="{
-            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-          }"
-        >
-        </map-marker>
+    <div class="dashboard-body">
 
-        <map-circle
-          [center]="center"
-          [radius]="raio * 1000"
-          [options]="{
-            strokeColor: '#1E90FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#1E90FF',
-            fillOpacity: 0.15
-          }"
-        >
-        </map-circle>
+      <main class="map-area">
+        <google-map [center]="center" [zoom]="zoom" height="100%" width="100%">
+          <map-marker
+            [position]="center"
+            [title]="'Você está aqui'"
+            [options]="{
+              icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+            }"
+          >
+          </map-marker>
 
-        <map-marker
-          *ngFor="let vaga of vagas"
-          [position]="vaga.posicao"
-          [title]="vaga.titulo"
-          [options]="{
-            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-          }"
-          (mapClick)="abrirInfoWindow(marker, vaga)"
-          #marker="mapMarker"
-        >
-        </map-marker>
+          <map-circle
+            [center]="center"
+            [radius]="raio * 1000"
+            [options]="{
+              strokeColor: '#1E90FF',
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: '#1E90FF',
+              fillOpacity: 0.15
+            }"
+          >
+          </map-circle>
 
-        <map-info-window>
-          <div class="info-window">
-            <h3 class="info-window__title">{{ infoContent.titulo }}</h3>
-            <p class="info-window__desc">{{ infoContent.descricao }}</p>
+          <map-marker
+            *ngFor="let vaga of vagas"
+            [position]="vaga.posicao"
+            [title]="vaga.titulo"
+            (mapClick)="abrirInfoWindow(marker, vaga)"
+            #marker="mapMarker"
+            [options]="{ icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' }"
+          >
+          </map-marker>
 
-            <button
-              class="info-window__button"
-              (click)="candidatar(usuarioLogado.id, infoContent.id)"
+          <map-info-window>
+            <div class="info-window" *ngIf="infoContent">
+              <h3 class="info-window__title">{{ infoContent.titulo }}</h3>
+              <p class="info-window__desc">{{ infoContent.descricao }}</p>
+
+              <button
+                class="info-window__button"
+                (click)="mostrarDetalhes(infoContent)"
+              >
+                Ver Detalhes
+              </button>
+            </div>
+          </map-info-window>
+        </google-map>
+      </main>
+
+      <aside class="job-list-panel">
+
+        <div *ngIf="!vagaSelecionada; else detalheVagaView" class="job-list-container">
+          <h3 class="job-list-title">Vagas Próximas</h3>
+          <div class="job-list-scroll-container">
+
+            <mat-card *ngIf="vagas.length === 0" class="job-card">
+              <mat-card-content>
+                <p>Nenhuma vaga encontrada. Tente atualizar a busca.</p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card
+              *ngFor="let vaga of vagas"
+              class="job-card"
+              (click)="mostrarDetalhes(vaga)"
             >
-              Candidatar-se
-            </button>
+              <mat-card-header>
+                <mat-card-title>{{ vaga.titulo }}</mat-card-title>
+                <mat-card-subtitle>{{ vaga.nomeEmpresa }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{ vaga.descricao | slice:0:100 }}{{ vaga.descricao.length > 100 ? '...' : '' }}</p>
+              </mat-card-content>
+            </mat-card>
           </div>
-        </map-info-window>
-      </google-map>
-    </main>
+        </div>
+
+        <ng-template #detalheVagaView>
+          <div class="job-detail-container" *ngIf="vagaSelecionada">
+
+            <div class="job-detail-header">
+              <button mat-icon-button (click)="voltarParaLista()" title="Voltar para a lista">
+                <mat-icon>arrow_back</mat-icon>
+              </button>
+              <h3 class="job-detail-title">Detalhes da Vaga</h3>
+            </div>
+
+            <div class="job-detail-scroll-container">
+              <mat-card class="job-detail-card">
+                <mat-card-header>
+                  <mat-card-title>{{ vagaSelecionada.titulo }}</mat-card-title>
+                  <mat-card-subtitle>{{ vagaSelecionada.nomeEmpresa }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="detail-item">
+                    <mat-icon>location_on</mat-icon>
+                    <span>{{ vagaSelecionada.endereco || 'Endereço não informado' }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{ vagaSelecionada.tempoMedioEstimado || 'Não informado' }}</span>
+                  </div>
+                  <div class="detail-item description">
+                    <mat-icon>description</mat-icon>
+                    <p>{{ vagaSelecionada.descricao }}</p>
+                  </div>
+
+                </mat-card-content>
+              </mat-card>
+            </div>
+
+            <div class="job-detail-footer">
+              <button mat-raised-button color="primary" (click)="candidatar(usuarioLogado.id, vagaSelecionada.id)">
+                Candidatar-se
+              </button>
+            </div>
+
+          </div>
+        </ng-template>
+
+      </aside>
+
+    </div>
 
     <footer class="footer">
       <p class="footer__copyright">
-        WorkMap - © 2025 | Todos os Direitos Reservados.
+        Empre-GO! - © 2025 | Todos os Direitos Reservados.
       </p>
       <div class="footer__socials">
         <a href="#" class="footer__social-link" title="Facebook">F</a>

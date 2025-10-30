@@ -61,6 +61,17 @@ export class FormValidator {
     };
   }
 
+  static apenasNumeros(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) return null;
+      return /^[0-9]+$/.test(value)
+        ? null
+        : { apenasNumeros: 'Use apenas números.' };
+    };
+  }
+
+
   /** Apenas uma função (empregado OU empregador) */
   static somenteUmSelecionado(campo1: string, campo2: string): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {

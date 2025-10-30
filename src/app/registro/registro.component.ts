@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { StorageService } from '../storage.service'; // <-- 1. IMPORTE O SERVIÇO
+import { StorageService } from '../storage.service';
 
 @Component({
   selector: 'app-registro',
@@ -20,12 +20,12 @@ export class RegistroComponent {
     minlength: 'Mínimo de 3 caracteres.',
     email: 'Formato de e-mail inválido.',
     apenasLetras: 'Use apenas letras e espaços.',
+    apenasNumeros: 'Use apenas números.', // Adicionado
     emailValido: 'E-mail inválido.',
     senhaForte: 'A senha deve ter pelo menos 6 caracteres, incluindo letras, números e símbolos.',
     confirmarSenha: 'As senhas não coincidem.'
   };
 
-  // <-- 2. INJETE O SERVIÇO NO CONSTRUCTOR
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -38,6 +38,10 @@ export class RegistroComponent {
     this.registerForm = this.fb.group(
       {
         nome: ['', [Validators.required, Validators.minLength(3), FormValidator.apenasLetras()]],
+        // --- ADICIONADOS ---
+        idade: ['', [Validators.required, FormValidator.apenasNumeros()]],
+        cidade: ['', [Validators.required, Validators.minLength(3)]],
+        // -------------------
         email: ['', [Validators.required, Validators.email, FormValidator.emailValido()]],
         senha: ['', [Validators.required, FormValidator.senhaForte()]],
         confirmarSenha: ['', Validators.required],
@@ -63,11 +67,9 @@ export class RegistroComponent {
     this.processarRegistro(this.registerForm.value);
   }
 
-  /**
-   * Processa o registro usando o StorageService.
-   */
   private processarRegistro(formValue: any) {
-    const { nome, email, senha, roles } = formValue;
+    // --- ATUALIZADO ---
+    const { nome, email, senha, roles, idade, cidade } = formValue;
     const selectedRole = roles.empregado ? 'empregado' : 'empregador';
 
     if (selectedRole === 'empregado') {
@@ -76,9 +78,10 @@ export class RegistroComponent {
         id: empregados.length + 1,
         nome,
         email,
-        senha
+        senha,
+        idade: +idade, // Converte para número
+        cidade
       };
-      // <-- 3. USE O SERVIÇO PARA SALVAR
       this.storageService.salvarEmpregado(novoEmpregado);
     } else {
       const empregadores = this.storageService.getEmpregadores();
@@ -86,11 +89,13 @@ export class RegistroComponent {
         id: empregadores.length + 1,
         nome,
         email,
-        senha
+        senha,
+        idade: +idade, // Converte para número
+        cidade
       };
-      // <-- 3. USE O SERVIÇO PARA SALVAR
       this.storageService.salvarEmpregador(novoEmpregador);
     }
+    // -------------------
 
     alert(`Usuário registrado como ${selectedRole === 'empregador' ? 'Empregador' : 'Empregado'} com sucesso!`);
     this.router.navigate(['/login']);

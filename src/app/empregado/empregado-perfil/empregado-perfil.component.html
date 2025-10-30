@@ -1,24 +1,24 @@
 <div class="perfil-container">
   <aside class="sidebar">
-    <div class="sidebar-header">
+    <div class="sidebar__section sidebar__section--top">
       <mat-icon class="logo-icon">location_on</mat-icon>
     </div>
-    <div class="sidebar-footer">
+    <div class="sidebar__section sidebar__section--bottom">
       <button
-        mat-icon-button
-        class="voltar-btn"
+        class="sidebar__button"
         (click)="voltar()"
         aria-label="Voltar"
+        title="Voltar"
       >
         <mat-icon>arrow_back</mat-icon>
-        <span>Voltar</span>
       </button>
+      <span class="sidebar__label">Voltar</span>
     </div>
   </aside>
 
   <main class="perfil-content" *ngIf="empregado; else notFound">
     <div class="perfil-header">
-      <h2 class="perfil-title">Perfil WorkMap do usuário:</h2>
+      <h2 class="perfil-title">Perfil Empre-GO! do usuário:</h2>
       <button
         mat-stroked-button
         color="primary"
@@ -37,8 +37,8 @@
       <mat-card class="info-card-principal">
         <mat-card-content>
           <p><strong>Nome:</strong> {{ empregado.nome }}</p>
-          <p><strong>Idade:</strong> 27 anos</p>
-          <p><strong>Cidade:</strong> Sorocaba</p>
+          <p><strong>Idade:</strong> {{ empregado.idade }} anos</p>
+          <p><strong>Cidade:</strong> {{ empregado.cidade }}</p>
         </mat-card-content>
         <div class="avaliacao">
           <mat-icon>star</mat-icon>
@@ -86,7 +86,7 @@
       </mat-card>
     </div>
 
-    <mat-card class="info-card">
+    <mat-card class="info-card info-card-vagas">
       <mat-card-title>Vagas Aplicadas</mat-card-title>
       <mat-card-content>
         <div *ngIf="vagasAplicadas.length > 0; else semVagas">

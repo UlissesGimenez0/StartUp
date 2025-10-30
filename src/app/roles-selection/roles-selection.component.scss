@@ -1,36 +1,41 @@
+/* src/app/roles-selection/roles-selection.component.scss */
+
 /* Container geral com gradiente */
 .role-selection-container {
   background: linear-gradient(135deg, #FFD700 0%, #FFCC00 50%, #E6BE00 100%);
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Poppins', sans-serif;
+  /* REMOVIDO: font-family: 'Poppins', sans-serif; (Usará Roboto global) */
   overflow: hidden;
+  padding: 2rem; /* Adiciona espaçamento geral */
+  box-sizing: border-box; /* Garante que padding não estoure 100vh */
 }
 
-/* Top bar com botão de cadastro */
+/* Top bar - mantido flex-end para o botão de cadastro */
 .top-bar {
   display: flex;
   justify-content: flex-end;
-  padding: 1.5rem 2rem;
+  width: 100%;
+  flex-shrink: 0; /* Impede que encolha */
 }
 
 .register-btn {
-  background: #111;
-  color: #FFD700;
-  border: 2px solid #FFD700;
+  background: rgba(255, 255, 255, 0.2); /* Fundo branco semi-transparente */
+  color: #111; /* Texto escuro */
+  border: 2px solid #111; /* Borda escura */
   border-radius: 12px;
   padding: 0.7rem 1.5rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 .register-btn:hover {
-  background: #FFD700;
-  color: #111;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+  background: #111; /* Inverte no hover */
+  color: #FFD700;
+  border-color: #FFD700;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Conteúdo central */
@@ -38,25 +43,26 @@
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  padding: 2rem;
+  justify-content: space-evenly; /* MUDADO: de space-around para space-evenly */
+  width: 100%;
 }
 
 /* Texto principal */
 .role-info {
   max-width: 450px;
   color: #111;
+  text-align: left; /* Garante alinhamento à esquerda no desktop */
 }
 
 .role-info h1 {
-  font-size: 4rem;
+  font-size: 3.5rem; /* AJUSTADO: de 4rem */
   font-weight: 800;
   margin-bottom: 1rem;
-  text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .role-info p {
-  font-size: 1.4rem;
+  font-size: 1.3rem; /* AJUSTADO: de 1.4rem */
   line-height: 1.6;
   font-weight: 500;
 }
@@ -67,12 +73,16 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  background: rgba(0, 0, 0, 0.05); /* Fundo sutil para agrupar */
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .role-icon img {
-  width: 110px;
-  margin-bottom: 2rem;
-  filter: drop-shadow(0 0 8px rgba(0,0,0,0.4));
+  width: 100px; /* AJUSTADO: de 110px */
+  margin-bottom: 1rem; /* AJUSTADO: de 2rem */
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
 }
 
 /* Botões principais */
@@ -87,22 +97,38 @@
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 320px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 .role-btn:hover {
-  background: #FFD700;
-  color: #111;
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  background: #333; /* MUDADO: Efeito de hover mais sutil */
+  color: #FFD700;
+  transform: scale(1.03); /* MUDADO: Efeito de escala menor */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 800px) { /* AJUSTADO: Ponto de quebra maior */
+  .role-selection-container {
+    padding: 1rem; /* Menos padding no mobile */
+    justify-content: center;
+  }
+
+  .top-bar {
+     justify-content: center; /* Centraliza botão no mobile */
+     margin-bottom: 2rem;
+  }
+
   .role-content {
     flex-direction: column;
     text-align: center;
     gap: 3rem;
+    flex: 0 1 auto; /* Permite encolher */
+  }
+
+  .role-info {
+     text-align: center;
+     margin-bottom: 1rem;
   }
 
   .role-info h1 {
@@ -110,6 +136,6 @@
   }
 
   .role-btn {
-    min-width: 260px;
+    min-width: 280px; /* AJUSTADO: de 260px */
   }
 }
