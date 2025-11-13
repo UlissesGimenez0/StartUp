@@ -69,6 +69,20 @@
       </div>
 
       <div class="form-group">
+        <label for="telefone">Telefone (WhatsApp)</label>
+        <input
+          id="telefone"
+          type="text"
+          inputmode="numeric"
+          formControlName="telefone"
+          placeholder="Ex: 15999998888"
+        />
+        <small class="error" *ngIf="getErrorMessage('telefone')">{{
+          getErrorMessage("telefone")
+        }}</small>
+      </div>
+
+      <div class="form-group">
         <label for="cidade">Cidade</label>
         <input
           id="cidade"

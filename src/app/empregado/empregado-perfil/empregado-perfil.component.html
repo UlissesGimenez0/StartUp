@@ -22,7 +22,7 @@
       <button
         mat-stroked-button
         color="primary"
-        *ngIf="!modoEdicao"
+        *ngIf="isOwner && !modoEdicao"
         (click)="entrarModoEdicao()"
       >
         <mat-icon>edit</mat-icon>
@@ -40,13 +40,21 @@
           <p><strong>Idade:</strong> {{ empregado.idade }} anos</p>
           <p><strong>Cidade:</strong> {{ empregado.cidade }}</p>
         </mat-card-content>
+
         <div class="avaliacao">
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star</mat-icon>
-          <mat-icon>star_border</mat-icon>
+          <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+            <mat-icon *ngIf="(empregado.avaliacao || 0) >= i">star</mat-icon>
+            <mat-icon *ngIf="(empregado.avaliacao || 0) < i">star_border</mat-icon>
+          </ng-container>
+
+          <span *ngIf="empregado.avaliacao && empregado.avaliacao > 0" class="avaliacao-texto">
+             ({{ empregado.avaliacao.toFixed(1) }} de 5)
+          </span>
+          <span *ngIf="!empregado.avaliacao || empregado.avaliacao === 0" class="avaliacao-texto">
+             (Nenhuma avaliação)
+          </span>
         </div>
+
       </mat-card>
     </div>
 

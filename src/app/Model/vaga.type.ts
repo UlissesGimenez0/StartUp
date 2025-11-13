@@ -1,12 +1,16 @@
 export interface Vaga {
   id: number;
   nomeEmpresa: string;
+  autorId: number;
   titulo: string;
   descricao: string;
   posicao: google.maps.LatLngLiteral;
   candidatos: number[];
-  endereco?: string; // <-- ADICIONADO
-  tempoMedioEstimado?: string; // <-- ADICIONADO
+  endereco?: string;
+  tempoMedioEstimado?: string;
+
+  status: 'Aberta' | 'Preenchida';
+  candidatoSelecionadoId?: number;
 }
 export const VagasFake: Vaga[] = [
   {
@@ -17,7 +21,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua da Tecnologia, 123, Sorocaba/SP',
-    tempoMedioEstimado: '3 meses'
+    tempoMedioEstimado: '3 meses',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 2,
@@ -27,7 +33,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. dos Eventos, 500, Votorantim/SP',
-    tempoMedioEstimado: '1 dia (Sábado)'
+    tempoMedioEstimado: '1 dia (Sábado)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 3,
@@ -37,7 +45,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Bairro Campolim, Sorocaba/SP',
-    tempoMedioEstimado: 'Recorrente (1h/dia)'
+    tempoMedioEstimado: 'Recorrente (1h/dia)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 4,
@@ -47,7 +57,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Principal, 789, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   // NOVOS 40 REGISTROS
   {
@@ -58,7 +70,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Logística, 101, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 6,
@@ -68,7 +82,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Limpa, 45, Sorocaba/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 7,
@@ -78,7 +94,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Praça Central, Votorantim/SP',
-    tempoMedioEstimado: 'Final de semana'
+    tempoMedioEstimado: 'Final de semana',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 8,
@@ -88,7 +106,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Inovação, 200, Sorocaba/SP',
-    tempoMedioEstimado: '3 meses'
+    tempoMedioEstimado: '3 meses',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 9,
@@ -98,7 +118,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua da Obra, 50, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 10,
@@ -108,7 +130,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Moda, 120, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 11,
@@ -118,7 +142,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua do Café, 10, Sorocaba/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 12,
@@ -128,7 +154,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Fitness, 300, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 13,
@@ -138,7 +166,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Tecnologia, 75, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 14,
@@ -148,7 +178,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Pet, 20, Votorantim/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 15,
@@ -158,7 +190,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Educação, 101, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 16,
@@ -168,7 +202,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Mercado, 400, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 17,
@@ -178,7 +214,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Design, 88, Sorocaba/SP',
-    tempoMedioEstimado: '3 meses'
+    tempoMedioEstimado: '3 meses',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 18,
@@ -188,7 +226,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Entrega, 15, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 19,
@@ -198,7 +238,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Lanches, 70, Votorantim/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 20,
@@ -208,7 +250,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Construção, 5, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 21,
@@ -218,7 +262,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Mecânica, 99, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 22,
@@ -228,7 +274,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Pão, 120, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 23,
@@ -238,7 +286,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Tecnologia, 45, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 24,
@@ -248,7 +298,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Fitness, 222, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 25,
@@ -258,7 +310,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Eventos, 300, Votorantim/SP',
-    tempoMedioEstimado: '3 meses'
+    tempoMedioEstimado: '3 meses',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 26,
@@ -268,7 +322,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Pet, 77, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 27,
@@ -278,7 +334,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Sapato, 11, Sorocaba/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 28,
@@ -288,7 +346,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Mobile, 33, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 29,
@@ -298,7 +358,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Educação, 77, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 30,
@@ -308,7 +370,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Central, 400, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 31,
@@ -318,7 +382,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Sabor, 25, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 32,
@@ -328,7 +394,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Dev, 101, Sorocaba/SP',
-    tempoMedioEstimado: '3 meses'
+    tempoMedioEstimado: '3 meses',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 33,
@@ -338,7 +406,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Bike, 12, Sorocaba/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 34,
@@ -348,7 +418,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Criança, 50, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 35,
@@ -358,7 +430,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Doce, 60, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 36,
@@ -368,7 +442,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Contábil, 80, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 37,
@@ -378,7 +454,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Informática, 23, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 38,
@@ -388,7 +466,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Fotografia, 77, Votorantim/SP',
-    tempoMedioEstimado: 'Evento pontual'
+    tempoMedioEstimado: 'Evento pontual',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 39,
@@ -398,7 +478,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Beleza, 11, Sorocaba/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 40,
@@ -408,7 +490,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Transporte, 99, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 41,
@@ -418,7 +502,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Pizza, 40, Sorocaba/SP',
-    tempoMedioEstimado: 'Integral (CLT)'
+    tempoMedioEstimado: 'Integral (CLT)',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 42,
@@ -428,7 +514,9 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Av. Dança, 55, Sorocaba/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
   {
     id: 43,
@@ -438,6 +526,8 @@ export const VagasFake: Vaga[] = [
     posicao: { lat: 0, lng: 0 },
     candidatos: [],
     endereco: 'Rua Aroma, 15, Sorocaba/SP',
-    tempoMedioEstimado: 'Meio período'
+    tempoMedioEstimado: 'Meio período',
+    autorId: 0,
+    status: "Aberta"
   },
 ];

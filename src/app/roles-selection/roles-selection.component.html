@@ -1,21 +1,30 @@
 <!-- role-selection.component.html -->
 <div class="role-selection-container">
   <header class="top-bar">
-    <button class="register-btn" (click)="goToRegister()">Novo por aqui? Faça o seu cadastro</button>
+    <button class="register-btn" (click)="goToRegister()">
+      Novo por aqui? Faça o seu cadastro
+    </button>
   </header>
 
   <main class="role-content">
     <section class="role-info">
       <h1>Empre-GO!</h1>
-      <p>A solução ideal para a busca e solicitação de serviços baseados na sua localização.</p>
+      <p>
+        A solução ideal para a busca e solicitação de serviços baseados na sua
+        localização.
+      </p>
     </section>
 
     <section class="role-actions">
       <div class="role-icon">
-        <img src="assets/icons/service-icon.svg" alt="Ícone serviço" />
+        <mat-icon class="role-icon-large">location_on</mat-icon>
       </div>
-      <button class="role-btn" (click)="selectRole('empregado')">Estou buscando oferecer um serviço</button>
-      <button class="role-btn" (click)="selectRole('empregador')">Estou precisando de um serviço</button>
+      <button class="role-btn" (click)="selectRole('empregado')">
+        Estou buscando oferecer um serviço
+      </button>
+      <button class="role-btn" (click)="selectRole('empregador')">
+        Estou precisando de um serviço
+      </button>
     </section>
   </main>
 </div>

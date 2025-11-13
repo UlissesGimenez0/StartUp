@@ -41,6 +41,7 @@ export class RegistroComponent {
         // --- ADICIONADOS ---
         idade: ['', [Validators.required, FormValidator.apenasNumeros()]],
         cidade: ['', [Validators.required, Validators.minLength(3)]],
+        telefone: ['', [Validators.required, FormValidator.apenasNumeros(), Validators.minLength(10), Validators.maxLength(11)]],
         // -------------------
         email: ['', [Validators.required, Validators.email, FormValidator.emailValido()]],
         senha: ['', [Validators.required, FormValidator.senhaForte()]],
@@ -67,42 +68,47 @@ export class RegistroComponent {
     this.processarRegistro(this.registerForm.value);
   }
 
+// ...
   private processarRegistro(formValue: any) {
-    // --- ATUALIZADO ---
-    const { nome, email, senha, roles, idade, cidade } = formValue;
+
+    const { nome, email, senha, roles, idade, cidade, telefone } = this.registerForm.value;
     const selectedRole = roles.empregado ? 'empregado' : 'empregador';
 
+    const empregados = this.storageService.getEmpregados();
+    const empregadores = this.storageService.getEmpregadores();
+
+
+    const novoId = empregados.length + empregadores.length + 1;
+
     if (selectedRole === 'empregado') {
-      const empregados = this.storageService.getEmpregados();
       const novoEmpregado = {
-        id: empregados.length + 1,
+        id: novoId,
         nome,
         email,
         senha,
-        idade: +idade, // Converte para número
-        cidade
+        idade: +idade,
+        cidade,
+        telefone
       };
       this.storageService.salvarEmpregado(novoEmpregado);
     } else {
-      const empregadores = this.storageService.getEmpregadores();
       const novoEmpregador = {
-        id: empregadores.length + 1,
+        id: novoId,
         nome,
         email,
         senha,
-        idade: +idade, // Converte para número
+        idade: +idade,
         cidade
       };
       this.storageService.salvarEmpregador(novoEmpregador);
     }
-    // -------------------
+
 
     alert(`Usuário registrado como ${selectedRole === 'empregador' ? 'Empregador' : 'Empregado'} com sucesso!`);
     this.router.navigate(['/login']);
   }
 
   getErrorMessage(campo: string): string | null {
-    // ... (o resto do seu componente continua igual)
     const control = this.registerForm.get(campo);
     if (!control || !control.touched) return null;
     if (campo === 'confirmarSenha' && this.registerForm.errors?.['confirmarSenha']) {

@@ -2,13 +2,14 @@ import { Component, ViewChild, ViewChildren, QueryList, OnDestroy } from '@angul
 import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Vaga } from '../Model/vaga.type'; // <-- Remove VagasFake
+import { Vaga } from '../Model/vaga.type';
 import { Router } from '@angular/router';
 import { StorageService } from '../storage.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Subject, filter, takeUntil } from 'rxjs'; // <-- Importa RxJs
+import { Subject, filter, takeUntil } from 'rxjs';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @Component({
   selector: 'app-empregado',
@@ -19,12 +20,13 @@ import { Subject, filter, takeUntil } from 'rxjs'; // <-- Importa RxJs
     FormsModule,
     MatCardModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatBadgeModule
   ],
   templateUrl: './empregado.component.html',
   styleUrl: './empregado.component.scss'
 })
-export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestroy
+export class EmpregadoComponent implements OnDestroy {
 
   constructor(private router: Router, private storage: StorageService) { }
   usuarioLogado!: { id: number, nome: string, email: string, senha: string };
@@ -35,12 +37,13 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
 
   center: google.maps.LatLngLiteral = { lat: -23.5043, lng: -47.4582 };
   zoom = 16;
-  raio = 3; // O raio do slider
-  vagas: Vaga[] = []; // Array de vagas
+  raio = 3;
+  vagas: Vaga[] = [];
   infoContent: Vaga | null = null;
   vagaSelecionada: Vaga | null = null;
 
-  // Subject para gerenciar a desinscrição
+  temNotificacao: boolean = false;
+
   private destroy$ = new Subject<void>();
 
   ngOnInit() {
@@ -52,10 +55,9 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
       return;
     }
 
-    // Inicia o carregamento com a localização do GPS
     this.carregarVagasBaseadasNaLocalizacao();
+    this.verificarNotificacoes();
 
-    // Inscreve-se para futuras atualizações (ex: candidatar-se)
     this.storage.onDBUpdate$
       .pipe(
         filter(scope => scope === 'vagas'),
@@ -63,8 +65,8 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
       )
       .subscribe(() => {
         console.log('Dashboard: Vagas atualizadas, recarregando...');
-        // Recarrega as vagas mantendo o centro e raio atuais
         this.atualizarVagasComRaio(this.center, this.raio);
+        this.verificarNotificacoes();
       });
   }
 
@@ -73,9 +75,20 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
     this.destroy$.complete();
   }
 
-  /**
-   * Obtém a geolocalização do usuário e inicia o processo de atualização de vagas.
-   */
+  private verificarNotificacoes(): void {
+    const vagasAplicadas = this.storage.getVagasAplicadas(this.usuarioLogado.id);
+
+    // --- [INÍCIO DA CORREÇÃO] ---
+    // A lógica correta é checar se a vaga está 'Preenchida' E se o ID é o do usuário
+    const temVagaAceita = vagasAplicadas.some(vaga =>
+      vaga.status === 'Preenchida' && vaga.candidatoSelecionadoId === this.usuarioLogado.id
+    );
+    // --- [FIM DA CORREÇÃO] ---
+
+    this.temNotificacao = temVagaAceita;
+    console.log('Tem Notificação?', this.temNotificacao);
+  }
+
   private carregarVagasBaseadasNaLocalizacao() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -83,7 +96,6 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        // Gera as vagas com base no centro e no raio padrão (3km)
         this.atualizarVagasComRaio(this.center, this.raio);
       }, () => {
         console.warn("Geolocalização negada. Usando localização padrão.");
@@ -94,66 +106,48 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
     }
   }
 
-  /**
-   * Função principal:
-   * 1. Busca TODAS as vagas (mock) do storage.
-   * 2. RE-GERA posições aleatórias para elas dentro do `raioKm` fornecido.
-   */
   private atualizarVagasComRaio(centro: google.maps.LatLngLiteral, raioKm: number): void {
-    // 1. Busca TODAS as vagas do storage
     const todasVagas = this.storage.getVagas();
 
-    // 2. Mapeia e GERA NOVAS POSIÇÕES para todas, usando o raio ATUAL
     this.vagas = todasVagas.map(vaga => ({
       ...vaga,
       nomeEmpresa: vaga.nomeEmpresa || 'Empresa Local',
-      posicao: this.gerarCoordenadaAleatoria(centro, raioKm) // Usa o raioKm
+      posicao: this.gerarCoordenadaAleatoria(centro, raioKm)
     }));
 
-    // 3. Atualiza a referência da vaga selecionada
     if (this.vagaSelecionada) {
-      this.vagaSelecionada = this.vagas.find(v => v.id === this.vagaSelecionada!.id) || null;
+      const vagaAtualizada = this.vagas.find(v => v.id === this.vagaSelecionada!.id);
+      this.vagaSelecionada = vagaAtualizada || null;
     }
   }
-
-  // --- Funções Públicas ---
 
   candidatar(empregadoId: number, vagaId: number) {
     this.storage.candidatar(empregadoId, vagaId);
     alert('Candidatura realizada com sucesso!');
-    // O 'onDBUpdate$' cuidará de atualizar a UI
   }
 
   verPerfil() {
     this.router.navigate(['/perfil', this.usuarioLogado.id]);
   }
 
-  /**
-   * Chamado pelo botão "Atualizar Busca" (Filtro)
-   * Re-busca a localização do GPS e re-gera as vagas com o raio ATUAL.
-   */
   public obterLocalizacaoUsuario() {
-    this.vagaSelecionada = null; // Fecha detalhes
+    this.vagaSelecionada = null;
     this.filtrosVisiveis = false;
-    // Re-busca a localização do GPS e atualiza
     this.carregarVagasBaseadasNaLocalizacao();
   }
 
-  /**
-   * NOVO: Chamado quando o slider de range muda.
-   * Apenas re-gera as vagas com o NOVO raio, sem buscar GPS.
-   */
   public onRangeChange(): void {
     console.log(`Raio alterado para: ${this.raio} km`);
-    // Não busca nova localização, apenas regenera as vagas com o novo raio
     this.atualizarVagasComRaio(this.center, this.raio);
   }
 
   abrirInfoWindow(marker: MapMarker, vaga: Vaga) {
-    const distancia = this.calcularDistanciaKm(this.center, vaga.posicao);
+    const vagaAtualizada = this.vagas.find(v => v.id === vaga.id) || vaga;
+
+    const distancia = this.calcularDistanciaKm(this.center, vagaAtualizada.posicao);
     this.infoContent = {
-      ...vaga,
-      descricao: `${vaga.descricao.substring(0, 50)}... (Aprox. ${distancia.toFixed(2)} km)`
+      ...vagaAtualizada,
+      descricao: `${vagaAtualizada.descricao.substring(0, 50)}... (Aprox. ${distancia.toFixed(2)} km)`
     };
     this.infoWindow.open(marker);
   }
@@ -165,8 +159,6 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
 
     if (markerIndex > -1 && markersArray[markerIndex]) {
       const marker = markersArray[markerIndex];
-      // Não centralizamos mais o mapa ao clicar na lista, deixamos o usuário controlar
-      // this.center = marker.getPosition()!.toJSON();
       this.abrirInfoWindow(marker, vaga);
     }
   }
@@ -175,7 +167,46 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
     this.vagaSelecionada = null;
   }
 
-  // --- Métodos Privados (Helpers) ---
+  public isCandidato(vaga: Vaga | null): boolean {
+    if (!vaga || !vaga.candidatos || !this.usuarioLogado) {
+      return false;
+    }
+    return vaga.candidatos.includes(this.usuarioLogado.id);
+  }
+
+  public getStatusCandidatura(vaga: Vaga | null): string {
+    if (!vaga || !this.usuarioLogado) return 'NaoInscrito';
+
+    const usuarioSeCandidatou = vaga.candidatos.includes(this.usuarioLogado.id);
+
+    if (!usuarioSeCandidatou) {
+      return 'NaoInscrito';
+    }
+
+    if (vaga.status === 'Aberta') {
+      return 'Pendente';
+    }
+
+    if (vaga.candidatoSelecionadoId === this.usuarioLogado.id) {
+      return 'Aceito';
+    } else {
+      return 'Recusado';
+    }
+  }
+
+  public getMarkerOptions(vaga: Vaga): google.maps.MarkerOptions {
+    const status = this.getStatusCandidatura(vaga);
+
+    let iconUrl = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+
+    if (status === 'Pendente') {
+      iconUrl = 'http://googleusercontent.com/maps.google.com/2';
+    } else if (status === 'Aceito') {
+      iconUrl = 'http://googleusercontent.com/maps.google.com/3';
+    }
+
+    return { icon: iconUrl };
+  }
 
   private gerarCoordenadaAleatoria(centro: google.maps.LatLngLiteral, raioKm: number): google.maps.LatLngLiteral {
     const raioEmGraus = raioKm / 111;
@@ -193,7 +224,7 @@ export class EmpregadoComponent implements OnDestroy { // <-- Implementa OnDestr
   private calcularDistanciaKm(coord1: google.maps.LatLngLiteral, coord2: google.maps.LatLngLiteral): number {
     if (!coord1 || !coord2) return Infinity;
 
-    const R = 6371; // raio da Terra em km
+    const R = 6371;
     const dLat = this.deg2rad(coord2.lat - coord1.lat);
     const dLng = this.deg2rad(coord2.lng - coord1.lng);
 

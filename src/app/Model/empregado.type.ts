@@ -5,6 +5,7 @@ export interface Empregado {
   senha: string;
   idade : number;
   cidade : string;
+  telefone: string;
   descricao?: string;
   avaliacao?: number;
   experiencia?: string;

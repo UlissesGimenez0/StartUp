@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Empregado } from './Model/empregado.type';
 import { Empregador } from './Model/empregador.type';
 import { Vaga, VagasFake } from './Model/vaga.type';
-import { Subject } from 'rxjs'; // <-- 1. IMPORTAR Subject
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,17 +10,11 @@ import { Subject } from 'rxjs'; // <-- 1. IMPORTAR Subject
 export class StorageService {
 
   private readonly DB_KEY = 'workmapDB';
+  private readonly NOTIFY_KEY = 'workmapDB_notify';
 
-  // 2. Criar um Subject privado para notificar mudanças
   private dbUpdated$ = new Subject<string>();
-
-  // 3. Expor o Subject como um Observable público
   public onDBUpdate$ = this.dbUpdated$.asObservable();
 
-  /**
-   * Obtém todo o banco de dados do LocalStorage.
-   * Se não existir, inicializa com valores padrão.
-   */
   private getDB(): any {
     const db = localStorage.getItem(this.DB_KEY);
     if (db) {
@@ -29,37 +23,35 @@ export class StorageService {
       const initialDB = {
         empregados: [],
         empregadores: [],
-        vagas: VagasFake // Começa com as vagas fakes
+        vagas: VagasFake
       };
-      this.saveDB(initialDB, 'init'); // Salva e notifica
+      this.saveDB(initialDB, 'init');
       return initialDB;
     }
   }
 
-  /**
-   * Salva o objeto completo do banco de dados no LocalStorage.
-   * @param db O objeto do banco de dados a ser salvo.
-   * @param scope O tipo de dados que foi alterado (ex: 'vagas', 'empregados')
-   */
   private saveDB(db: any, scope: string): void {
     localStorage.setItem(this.DB_KEY, JSON.stringify(db));
-    // 4. Notificar todos os inscritos sobre a mudança
     this.dbUpdated$.next(scope);
+
+    localStorage.setItem(this.NOTIFY_KEY, `${scope}_${new Date().getTime()}`);
   }
 
-  // ---------------- EMPREGADOS ----------------
+  public notifyChange(scope: string) {
+    console.log('Notificação externa recebida:', scope);
+    this.dbUpdated$.next(scope);
+  }
 
   salvarEmpregado(empregado: Empregado) {
     const db = this.getDB();
     const index = db.empregados.findIndex((e: Empregado) => e.id === empregado.id);
 
     if (index > -1) {
-      db.empregados[index] = empregado; // Atualiza
+      db.empregados[index] = empregado;
     } else {
-      db.empregados.push(empregado); // Adiciona
+      db.empregados.push(empregado);
     }
-
-    this.saveDB(db, 'empregados'); // <-- 5. Especificar o escopo
+    this.saveDB(db, 'empregados');
   }
 
   getEmpregadoById(id: number): Empregado | undefined {
@@ -72,18 +64,16 @@ export class StorageService {
     return db.empregados;
   }
 
-  // ---------------- EMPREGADORES ----------------
-
   salvarEmpregador(empregador: Empregador) {
     const db = this.getDB();
     const index = db.empregadores.findIndex((e: Empregador) => e.id === empregador.id);
 
     if (index > -1) {
-      db.empregadores[index] = empregador; // Atualiza
+      db.empregadores[index] = empregador;
     } else {
-      db.empregadores.push(empregador); // Adiciona
+      db.empregadores.push(empregador);
     }
-    this.saveDB(db, 'empregadores'); // <-- 5. Especificar o escopo
+    this.saveDB(db, 'empregadores');
   }
 
   getEmpregadores(): Empregador[] {
@@ -91,12 +81,10 @@ export class StorageService {
     return db.empregadores;
   }
 
-  // ---------------- VAGAS ----------------
-
   salvarVagas(vagas: Vaga[]) {
     const db = this.getDB();
     db.vagas = vagas;
-    this.saveDB(db, 'vagas'); // <-- 5. Especificar o escopo
+    this.saveDB(db, 'vagas');
   }
 
   getVagas(): Vaga[] {
@@ -114,7 +102,7 @@ export class StorageService {
       }
       if (!vaga.candidatos.includes(empregadoId)) {
         vaga.candidatos.push(empregadoId);
-        this.saveDB(db, 'vagas'); // <-- 5. Especificar o escopo
+        this.saveDB(db, 'vagas');
       }
     }
   }
@@ -126,15 +114,45 @@ export class StorageService {
     if (!vaga || !vaga.candidatos) {
       return [];
     }
-
-    // Filtra a lista de empregados para retornar apenas os que se candidataram
     return db.empregados.filter((e: Empregado) => vaga.candidatos.includes(e.id));
   }
 
   getVagasAplicadas(empregadoId: number): Vaga[] {
     const db = this.getDB();
-    // Filtra a lista de vagas, retornando apenas aquelas que incluem o ID do empregado
-    // no array de candidatos.
     return db.vagas.filter((vaga: Vaga) => vaga.candidatos?.includes(empregadoId));
+  }
+
+  adicionarVaga(novaVaga: Vaga) {
+    const db = this.getDB();
+    db.vagas.push(novaVaga);
+    this.saveDB(db, 'vagas');
+  }
+
+  salvarAvaliacao(empregadoId: number, nota: number) {
+    const db = this.getDB();
+    const empregado = db.empregados.find((e: Empregado) => e.id === empregadoId);
+
+    if (empregado) {
+      const avaliacaoAntiga = empregado.avaliacao || 0;
+      if (avaliacaoAntiga === 0) {
+        empregado.avaliacao = nota;
+      } else {
+        empregado.avaliacao = (avaliacaoAntiga + nota) / 2;
+      }
+      console.log(`Nova avaliação para ${empregado.nome}: ${empregado.avaliacao}`);
+      this.saveDB(db, 'empregados');
+    }
+  }
+
+  selecionarCandidato(vagaId: number, empregadoId: number) {
+    const db = this.getDB();
+    const vaga = db.vagas.find((v: Vaga) => v.id === vagaId);
+
+    if (vaga) {
+      vaga.status = 'Preenchida';
+      vaga.candidatoSelecionadoId = empregadoId;
+      console.log(`Candidato ${empregadoId} selecionado para a vaga ${vagaId}`);
+      this.saveDB(db, 'vagas');
+    }
   }
 }

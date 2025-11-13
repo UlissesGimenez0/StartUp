@@ -29,8 +29,17 @@
       </button>
     </div>
     <div class="sidebar__section sidebar__section--bottom">
-      <button class="sidebar__button" title="Ver perfil" (click)="verPerfil()">
-        <svg
+
+      <button
+        class="sidebar__button"
+        title="Ver perfil"
+        (click)="verPerfil()"
+        matBadge=" "
+        matBadgeColor="warn"
+        [matBadgeHidden]="!temNotificacao"
+        matBadgeSize="small"
+      >
+      <svg
           xmlns="http://www.w3.org/2000/svg"
           class="sidebar__icon sidebar__icon--profile"
           viewBox="0 0 20 20"
@@ -85,15 +94,16 @@
 
       <main class="map-area">
         <google-map [center]="center" [zoom]="zoom" height="100%" width="100%">
+
           <map-marker
             [position]="center"
             [title]="'Você está aqui'"
             [options]="{
               icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+
             }"
           >
           </map-marker>
-
           <map-circle
             [center]="center"
             [radius]="raio * 1000"
@@ -113,7 +123,7 @@
             [title]="vaga.titulo"
             (mapClick)="abrirInfoWindow(marker, vaga)"
             #marker="mapMarker"
-            [options]="{ icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' }"
+            [options]="getMarkerOptions(vaga)"
           >
           </map-marker>
 
@@ -122,12 +132,40 @@
               <h3 class="info-window__title">{{ infoContent.titulo }}</h3>
               <p class="info-window__desc">{{ infoContent.descricao }}</p>
 
-              <button
-                class="info-window__button"
-                (click)="mostrarDetalhes(infoContent)"
-              >
-                Ver Detalhes
-              </button>
+              <div [ngSwitch]="getStatusCandidatura(infoContent)">
+                <button
+                  *ngSwitchCase="'NaoInscrito'"
+                  class="info-window__button"
+                  (click)="mostrarDetalhes(infoContent)"
+                >
+                  Ver Detalhes
+                </button>
+                <button
+                  *ngSwitchCase="'Pendente'"
+                  class="info-window__button info-window__button--applied"
+                  (click)="mostrarDetalhes(infoContent)"
+                  disabled
+                >
+                  Inscrito
+                </button>
+                <button
+                  *ngSwitchCase="'Aceito'"
+                  class="info-window__button info-window__button--accepted"
+                  (click)="mostrarDetalhes(infoContent)"
+                  disabled
+                >
+                  Você foi selecionado!
+                </button>
+                <button
+                  *ngSwitchCase="'Recusado'"
+                  class="info-window__button info-window__button--refused"
+                  (click)="mostrarDetalhes(infoContent)"
+                  disabled
+                >
+                  Vaga Preenchida
+                </button>
+              </div>
+
             </div>
           </map-info-window>
         </google-map>
@@ -195,9 +233,30 @@
               </mat-card>
             </div>
 
-            <div class="job-detail-footer">
-              <button mat-raised-button color="primary" (click)="candidatar(usuarioLogado.id, vagaSelecionada.id)">
+            <div class="job-detail-footer" [ngSwitch]="getStatusCandidatura(vagaSelecionada)">
+
+              <button
+                *ngSwitchCase="'NaoInscrito'"
+                mat-raised-button
+                color="primary"
+                (click)="candidatar(usuarioLogado.id, vagaSelecionada.id)"
+              >
                 Candidatar-se
+              </button>
+
+              <button *ngSwitchCase="'Pendente'" mat-raised-button disabled>
+                <mat-icon>check</mat-icon>
+                Aguardando resultado
+              </button>
+
+              <button *ngSwitchCase="'Aceito'" mat-raised-button class="btn-aceito" disabled>
+                <mat-icon>celebration</mat-icon>
+                Você foi selecionado!
+              </button>
+
+              <button *ngSwitchCase="'Recusado'" mat-raised-button class="btn-recusado" disabled>
+                <mat-icon>block</mat-icon>
+                Vaga já preenchida
               </button>
             </div>
 

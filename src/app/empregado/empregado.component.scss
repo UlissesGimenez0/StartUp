@@ -1,17 +1,17 @@
-/* Define as variáveis de design para fácil customização */
 :host {
-  --primary-color: #facc15; // Amarelo principal
-  --dark-bg: #111827;      // Preto/Cinza escuro para fundos
-  --dark-text: #1f2937;    // Cor de texto principal
-  --light-text: #ffffff;   // Cor de texto claro
-  --gray-text: #6b7280;    // Cor de texto secundário
+  --primary-color: #facc15;
+  --dark-bg: #111827;
+  --dark-text: #1f2937;
+  --light-text: #ffffff;
+  --gray-text: #6b7280;
   --border-radius: 12px;
   --sidebar-width: 96px;
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --color-aceito: #2a9d8f;
+  --color-recusado: #e63946;
 }
 
-/* Reset básico e estilos do container principal */
 .workmap-container {
   display: flex;
   height: 100vh;
@@ -28,7 +28,6 @@
   overflow: hidden;
 }
 
-/* --- Barra Lateral --- */
 .sidebar {
   width: var(--sidebar-width);
   background-color: var(--primary-color);
@@ -65,7 +64,7 @@
     transition: background-color 0.3s, transform 0.2s ease-out;
 
     &:hover {
-      background-color: #374151; // Cinza mais escuro
+      background-color: #374151;
       transform: scale(1.1);
     }
   }
@@ -73,7 +72,7 @@
   &__icon {
     width: 30px;
     height: 30px;
-    color: var(--primary-color); // Cor para SVGs com 'currentColor'
+    color: var(--primary-color);
 
     &--profile {
        color: var(--light-text);
@@ -87,12 +86,11 @@
   }
 }
 
-/* --- Painel de Filtros --- */
 .filter-panel {
   position: absolute;
   top: 1.5rem;
   left: 1.5rem;
-  width: clamp(300px, 90%, 380px); // Responsivo
+  width: clamp(300px, 90%, 380px);
   background-color: white;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-xl);
@@ -157,13 +155,12 @@
     transition: background-color 0.3s, transform 0.2s;
 
     &:hover {
-      background-color: #fde047; // Amarelo mais claro
+      background-color: #fde047;
       transform: translateY(-2px);
     }
   }
 }
 
-/* --- Estilo Customizado para o Input Range --- */
 .range-slider {
   display: flex;
   align-items: center;
@@ -175,7 +172,7 @@
     appearance: none;
     width: 100%;
     height: 8px;
-    background: #e5e7eb; // Cinza claro
+    background: #e5e7eb;
     border-radius: 5px;
     outline: none;
 
@@ -210,7 +207,6 @@
   }
 }
 
-/* --- Wrapper para Mapa e Lista --- */
 .dashboard-body {
   display: flex;
   flex-direction: row;
@@ -218,7 +214,6 @@
   overflow: hidden;
 }
 
-/* --- Map-area --- */
 .map-area {
   flex: 3;
   height: 100%;
@@ -231,7 +226,6 @@
   width: 100%;
 }
 
-/* --- Painel da Lista de Vagas (Atualizado) --- */
 .job-list-panel {
   flex: 1;
   min-width: 300px;
@@ -241,10 +235,9 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden; /* Importante para o *ngIf */
+  overflow: hidden;
 }
 
-/* Container da Lista (Estado 1) */
 .job-list-container {
   display: flex;
   flex-direction: column;
@@ -273,7 +266,6 @@
   gap: 1rem;
 }
 
-/* Estilo para os cards de vaga */
 .job-card {
   background: white;
   border-radius: 8px !important;
@@ -315,8 +307,6 @@
   }
 }
 
-
-/* --- NOVO: Container de Detalhes (Estado 2) --- */
 .job-detail-container {
   display: flex;
   flex-direction: column;
@@ -347,19 +337,19 @@
 
 .job-detail-card {
   padding: 0.5rem;
-  background: #f9f9f9; // Cor de fundo do painel
+  background: #f9f9f9;
   box-shadow: none !important;
 
   .detail-item {
     display: flex;
-    align-items: flex-start; /* Alinha ícone com a primeira linha de texto */
+    align-items: flex-start;
     gap: 0.75rem;
     color: var(--gray-text, #6b7280);
     margin-bottom: 1rem;
 
     mat-icon {
       color: var(--dark-text);
-      margin-top: 2px; /* Ajuste fino vertical */
+      margin-top: 2px;
     }
 
     span {
@@ -367,19 +357,17 @@
       line-height: 1.5;
     }
 
-    /* Estilo para o parágrafo de descrição */
     p {
       margin: 0;
       font-size: 0.95rem;
       line-height: 1.5;
-      /* Permite quebras de linha e texto longo */
       white-space: pre-wrap;
       overflow-wrap: break-word;
     }
   }
 
   .detail-item.description {
-    color: var(--dark-text); /* Descrição com texto mais escuro */
+    color: var(--dark-text);
   }
 }
 
@@ -395,18 +383,27 @@
     padding: 0.75rem;
     font-size: 1rem;
     font-weight: 700;
-    /* Cor do botão (Amarelo/Preto) */
     background-color: var(--primary-color, #facc15);
     color: var(--dark-bg, #111827);
 
     &:hover {
       background-color: #fde047;
     }
+
+    &.btn-aceito {
+      background-color: var(--color-aceito);
+      color: var(--light-text);
+      &:hover { background-color: var(--color-aceito); }
+    }
+
+    &.btn-recusado {
+      background-color: var(--color-recusado);
+      color: var(--light-text);
+      &:hover { background-color: var(--color-recusado); }
+    }
   }
 }
 
-
-/* --- Rodapé e InfoWindow --- */
 .footer {
   background-color: var(--dark-bg);
   color: #9ca3af;
@@ -469,23 +466,46 @@
       background-color: #fde047;
       transform: translateY(-2px);
     }
+
+    &--applied, &--refused {
+      background-color: var(--gray-text);
+      color: white;
+      cursor: not-allowed;
+      font-size: 0.8rem;
+
+      &:hover {
+        background-color: var(--gray-text);
+        transform: none;
+      }
+    }
+
+    &--accepted {
+      background-color: var(--color-aceito);
+      color: white;
+      cursor: not-allowed;
+      font-size: 0.8rem;
+
+      &:hover {
+        background-color: var(--color-aceito);
+        transform: none;
+      }
+    }
   }
 }
 
-/* --- Responsividade --- */
 @media (max-width: 900px) {
   .dashboard-body {
-    flex-direction: column; /* Empilha o mapa e a lista */
+    flex-direction: column;
   }
 
   .map-area {
-    flex: 2; /* Mapa ocupa 2/3 da altura */
+    flex: 2;
     min-height: 400px;
     height: 60vh;
   }
 
   .job-list-panel {
-    flex: 1; /* Lista ocupa 1/3 */
+    flex: 1;
     min-width: 100%;
     max-width: 100%;
     border-left: none;
@@ -494,7 +514,6 @@
   }
 
   .filter-panel {
-    /* Ajusta o painel de filtro no mobile */
     width: 90%;
     left: 5%;
     top: 1rem;

@@ -1,1 +1,242 @@
-<p>empregador works!</p>
+<div class="empregador-container">
+  <aside class="sidebar">
+    <div class="sidebar__section sidebar__section--top">
+      <mat-icon class="logo-icon">business</mat-icon>
+    </div>
+    <div class="sidebar__section sidebar__section--bottom">
+      <button
+        class="sidebar__button"
+        (click)="logout()"
+        aria-label="Logout"
+        title="Logout"
+      >
+        <mat-icon>logout</mat-icon>
+      </button>
+      <span class="sidebar__label">Sair</span>
+    </div>
+  </aside>
+
+  <main class="empregador-content">
+    <div class="empregador-header">
+      <h2 class="empregador-title">Dashboard do Empregador</h2>
+      <span>Bem-vindo, {{ usuarioLogado.nome }}</span>
+    </div>
+
+    <div class="dashboard-grid">
+      <mat-card class="form-card">
+        <mat-card-title>Criar Nova Vaga</mat-card-title>
+        <mat-card-content>
+          <form
+            (ngSubmit)="criarNovaVaga()"
+            #vagaForm="ngForm"
+            class="vaga-form"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>Nome da Empresa</mat-label>
+              <input
+                matInput
+                [(ngModel)]="novaVaga.nomeEmpresa"
+                name="nomeEmpresa"
+                required
+                disabled
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Título da Vaga</mat-label>
+              <input
+                matInput
+                [(ngModel)]="novaVaga.titulo"
+                name="titulo"
+                required
+                placeholder="Ex: Barman para evento"
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Endereço</mat-label>
+              <input
+                matInput
+                [(ngModel)]="novaVaga.endereco"
+                name="endereco"
+                placeholder="Ex: Rua da Festa, 123, Sorocaba/SP"
+                #enderecoInput
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Tempo Estimado</mat-label>
+              <input
+                matInput
+                [(ngModel)]="novaVaga.tempoMedioEstimado"
+                name="tempoMedioEstimado"
+                placeholder="Ex: 1 dia (Sábado)"
+              />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Descrição Completa da Vaga</mat-label>
+              <textarea
+                matInput
+                [(ngModel)]="novaVaga.descricao"
+                name="descricao"
+                required
+                rows="5"
+              ></textarea>
+            </mat-form-field>
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="vagaForm.invalid"
+            >
+              Publicar Vaga
+            </button>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="list-card">
+        <div *ngIf="!vagaSelecionada; else detalheVagaView">
+          <mat-card-title>Vagas Publicadas</mat-card-title>
+          <mat-card-content>
+            <div *ngIf="vagasCriadas.length === 0; else haVagas">
+              <p>Nenhuma vaga criada ainda. Use o formulário ao lado.</p>
+            </div>
+            <ng-template #haVagas>
+              <mat-list role="list">
+                <mat-list-item
+                  *ngFor="let vaga of vagasCriadas"
+                  role="listitem"
+                  (click)="verCandidatos(vaga)"
+                  class="vaga-list-item"
+                >
+                  <mat-icon matListItemIcon>work</mat-icon>
+                  <div matListItemTitle>{{ vaga.titulo }}</div>
+                  <div matListItemLine>
+                    {{ vaga.descricao | slice : 0 : 100 }}...
+                  </div>
+
+                  <span
+                    matListItemMeta
+                    class="candidatos-count"
+                    title="{{ vaga.candidatos.length }} candidatos"
+                  >
+                    <mat-icon>group</mat-icon>
+                    {{ vaga.candidatos.length }}
+                  </span>
+                </mat-list-item>
+              </mat-list>
+            </ng-template>
+          </mat-card-content>
+        </div>
+        <ng-template #detalheVagaView>
+          <div class="job-detail-header">
+            <button
+              mat-icon-button
+              (click)="voltarParaLista()"
+              title="Voltar para a lista"
+            >
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <h3 class="job-detail-title">
+              Candidatos para: {{ vagaSelecionada?.titulo }}
+            </h3>
+          </div>
+          <mat-card-content class="job-detail-scroll-container">
+            <div *ngIf="candidatosDaVaga.length === 0; else haCandidatos">
+               <p>Nenhum candidato se aplicou a esta vaga ainda.</p>
+            </div>
+            <ng-template #haCandidatos>
+              <mat-list role="list">
+                <mat-list-item
+                  *ngFor="let candidato of candidatosDaVaga"
+                  role="listitem"
+                  class="candidato-item"
+                >
+                  <mat-icon matListItemIcon>person</mat-icon>
+                 <div matListItemTitle>
+                    <a [routerLink]="['/perfil', candidato.id]" target="_blank" class="candidato-nome-link">
+                      {{ candidato.nome }}
+                    </a>
+                  </div>
+                  <div matListItemLine>Cidade: {{ candidato.cidade }}</div>
+
+                  <div matListItemLine class="candidato-contato">
+                    <mat-icon>email</mat-icon>
+                    <span>{{ candidato.email }}</span>
+                  </div>
+
+                  <div matListItemLine class="candidato-contato">
+                    <mat-icon>chat</mat-icon> <a
+                      [href]="'https://wa.me/55' + candidato.telefone"
+                      target="_blank"
+                    >
+                      {{ candidato.telefone }} (Chamar no WhatsApp)
+                    </a>
+                  </div>
+
+                  <div matListItemLine class="avaliacao-candidato-display">
+                    <span class="avaliacao-label">Avaliação:</span>
+                    <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+                      <mat-icon
+                        *ngIf="(candidato.avaliacao || 0) >= i"
+                        class="star-filled"
+                        >star</mat-icon
+                      >
+                      <mat-icon
+                        *ngIf="(candidato.avaliacao || 0) < i"
+                        class="star-border"
+                        >star_border</mat-icon
+                      >
+                    </ng-container>
+                    <span
+                      *ngIf="candidato.avaliacao && candidato.avaliacao > 0"
+                      class="avaliacao-texto"
+                    >
+                      ({{ candidato.avaliacao.toFixed(1) }})
+                    </span>
+                    <span
+                      *ngIf="!candidato.avaliacao || candidato.avaliacao === 0"
+                      class="avaliacao-texto"
+                    >
+                      (N/A)
+                    </span>
+                  </div>
+
+                  <div matListItemLine class="avaliacao-candidato">
+                    <span>Avaliar:</span>
+                    <button mat-icon-button (click)="avaliarCandidato(candidato, 1)" title="1 estrela"><mat-icon>star</mat-icon></button>
+                    <button mat-icon-button (click)="avaliarCandidato(candidato, 2)" title="2 estrelas"><mat-icon>star</mat-icon></button>
+                    <button mat-icon-button (click)="avaliarCandidato(candidato, 3)" title="3 estrelas"><mat-icon>star</mat-icon></button>
+                    <button mat-icon-button (click)="avaliarCandidato(candidato, 4)" title="4 estrelas"><mat-icon>star</mat-icon></button>
+                    <button mat-icon-button (click)="avaliarCandidato(candidato, 5)" title="5 estrelas"><mat-icon>star</mat-icon></button>
+                  </div>
+
+                  <div matListItemLine class="acao-candidato">
+                    <button
+                      *ngIf="vagaSelecionada?.status === 'Aberta'"
+                      mat-stroked-button
+                      color="primary"
+                      (click)="selecionarCandidato(vagaSelecionada, candidato)"
+                    >
+                      <mat-icon>check_circle</mat-icon>
+                      Selecionar para a Vaga
+                    </button>
+
+                    <span class="candidato-selecionado-label" *ngIf="vagaSelecionada?.candidatoSelecionadoId === candidato.id">
+                      <mat-icon>check_circle</mat-icon>
+                      Selecionado
+                    </span>
+                  </div>
+
+                  </mat-list-item>
+              </mat-list>
+            </ng-template>
+          </mat-card-content>
+        </ng-template>
+      </mat-card>
+    </div>
+  </main>
+</div>
