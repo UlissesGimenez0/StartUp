@@ -1,0 +1,149 @@
+
+/* --- NOVO WRAPPER DE PÁGINA --- */
+.registro-page-wrapper {
+  /* Usa o mesmo gradiente da tela de seleção */
+  background: linear-gradient(135deg, #FFD700 0%, #FFCC00 50%, #E6BE00 100%);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0; /* Espaçamento vertical para telas pequenas */
+  box-sizing: border-box;
+}
+
+.register-container {
+  max-width: 450px; /* Um pouco mais largo */
+  width: 90%; /* Responsividade */
+  margin: 0; /* Resetamos a margem original de 4rem auto */
+  padding: 2.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  color: #333333;
+}
+
+/* --- Título (h2) --- */
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* --- Formulário e Grupos de Campo --- */
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.register-container .form-group,
+.register-container .role-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Rótulos (Labels) --- */
+.register-container label {
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+/* --- Campos de Input (Texto, Email, Senha) --- */
+.register-container input[type='text'],
+.register-container input[type='email'],
+.register-container input[type='password'] {
+  padding: 0.8rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  outline: none;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.register-container input:focus {
+  /* MUDANÇA: Cor de foco para preto (combinando com tema) */
+  border-color: #111;
+  /* MUDANÇA: Sombra de foco para amarelo */
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.4);
+}
+
+.register-container input::placeholder {
+  color: #94a3b8;
+}
+
+/* --- Grupo de Funções (Roles) --- */
+.register-container .role-group {
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+
+  p {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+
+  label {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #475569;
+    margin-bottom: 0.5rem;
+  }
+
+  label:last-child {
+    margin-bottom: 0;
+  }
+
+  input[type="checkbox"] {
+    transform: scale(1.1);
+    /* MUDANÇA: Cor do checkbox para combinar */
+    accent-color: #111;
+  }
+}
+
+/* --- Mensagens de Erro --- */
+.register-container .error {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+/* --- Botão de Submissão (Registrar) --- */
+.register-container button {
+  margin-top: 1rem;
+  padding: 0.85rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  /* MUDANÇA: Cor do botão para preto/amarelo */
+  color: #FFD700;
+  background: #111;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+  letter-spacing: 0.5px;
+
+  &:disabled {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    /* MUDANÇA: Hover mais escuro */
+    background: #333;
+    transform: translateY(-2px);
+    /* MUDANÇA: Sombra do hover para amarelo */
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+  }
+}
