@@ -96,20 +96,34 @@ export class EmpregadorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  carregarVagas(): void {
-    this.carregando = true;
-    this.erroVagas = '';
-    this.api.listarVagas().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (vagas) => {
-        this.vagasCriadas = vagas.filter(v => v.autor?.id === this.usuarioLogado.id);
-        this.carregando = false;
-      },
-      error: () => {
-        this.erroVagas = 'Não foi possível carregar as vagas. Verifique se o servidor está rodando.';
-        this.carregando = false;
-      }
-    });
-  }
+carregarVagas(): void {
+  this.carregando = true;
+  this.erroVagas = '';
+  
+  this.api.listarVagas().pipe(takeUntil(this.destroy$)).subscribe({
+    next: (vagas) => {
+      // 1. LOG DE DEPURAÇÃO: Abra o console (F12) e veja o que está chegando
+      console.log('ID do Logado:', this.usuarioLogado.id);
+      console.log('Primeira vaga da API:', vagas[0]);
+
+      // 2. FILTRO ROBUSTO
+      this.vagasCriadas = vagas.filter(v => {
+        // Extrai o ID do autor de várias formas possíveis (autor.id, autorId, empregador.id)
+        const idDaVaga = v.autor?.id || (v as any).autorId || (v as any).empregador?.id;
+        
+        // Usamos == (dois iguais) para ignorar se é String ou Número
+        return idDaVaga == this.usuarioLogado.id;
+      });
+
+      this.carregando = false;
+    },
+    error: (err) => {
+      console.error('Erro na API:', err);
+      this.erroVagas = 'Não foi possível carregar as vagas.';
+      this.carregando = false;
+    }
+  });
+}
 
   criarNovaVaga(): void {
     if (!this.novaVaga.titulo || !this.novaVaga.descricao || !this.novaVaga.endereco) {
