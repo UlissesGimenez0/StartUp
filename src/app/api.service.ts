@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+
 
 // ─── Tipos que espelhamos do backend ────────────────────────────────────────
 
@@ -31,9 +32,13 @@ export interface CandidatoAPI {
   experiencia?: string;
 }
 
+
 export interface LoginResponse {
-  id: number;
-  role: 'CANDIDATO' | 'EMPREGADOR';
+  email: string;
+  token: string;
+  perfil: 'CANDIDATO' | 'EMPREGADOR';
+  candidatoId?: number;
+  empregadorId?: number;
 }
 
 // ─── Helpers de conversão (backend ↔ frontend) ──────────────────────────────
@@ -57,7 +62,15 @@ export class ApiService {
   //uso da api renderizada: https://back-end-emprego.onrender.com
   private readonly BASE_URL = 'https://back-end-emprego.onrender.com';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+
+    return token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+  }
 
   // ── Auth ──────────────────────────────────────────────────────────────────
 
@@ -68,46 +81,68 @@ export class ApiService {
 
   // this.api.registro({ nome, email, senha, role, cidade, telefone, idade: String(idade) })
   registro(payload: {
-  nome: string;
-  email: string;
-  senha: string;
-  role: 'CANDIDATO' | 'EMPREGADOR';
-  cidade: string;
-  telefone: string;
-  idade: string;
+    nome: string;
+    email: string;
+    senha: string;
+    role: 'CANDIDATO' | 'EMPREGADOR';
+    cidade: string;
+    telefone: string;
+    idade: string;
   }): Observable<string> {
-    return this.http.post(`${this.BASE_URL}/auth/registro`, payload, {
+    return this.http.post(`${this.BASE_URL}/api/auth/registrar`, {
+      nome: payload.nome,
+      email: payload.email,
+      senha: payload.senha,
+      perfil: payload.role,
+      cidade: payload.cidade,
+      telefone: payload.telefone,
+      idade: Number(payload.idade)
+    }, {
       responseType: 'text'
     });
   }
-
   /**
    * Faz login e devolve { id, role } extraídos da resposta do backend.
    * Backend retorna: "Login realizado! Id: 3"
    */
   login(email: string, senha: string, role: 'CANDIDATO' | 'EMPREGADOR'): Observable<LoginResponse> {
-    return this.http
-      .post(`${this.BASE_URL}/auth/login`, { email, senha, role }, { responseType: 'text' })
-      .pipe(
-        map((resposta: string) => {
-          // Extrai o ID da string "Login realizado! Id: 3"
-          const match = resposta.match(/Id:\s*(\d+)/);
-          const id = match ? parseInt(match[1]) : 0;
-          return { id, role };
-        })
-      );
+    return this.http.post<LoginResponse>(`${this.BASE_URL}/api/auth`, {
+      email,
+      senha
+    }).pipe(
+      map((response) => {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('userRole', response.perfil.toLowerCase());
+
+        const id = response.perfil === 'EMPREGADOR'
+          ? response.empregadorId
+          : response.candidatoId;
+
+        localStorage.setItem('loggedInUser', JSON.stringify({
+          id,
+          email: response.email,
+          nome: response.email.split('@')[0],
+          role: response.perfil
+        }));
+
+        return response;
+      })
+    );
   }
 
   // ── Vagas ─────────────────────────────────────────────────────────────────
 
   /** Lista todas as vagas */
   listarVagas(): Observable<VagaAPI[]> {
-    return this.http.get<VagaAPI[]>(`${this.BASE_URL}/vagas`);
+    return this.http.get<VagaAPI[]>(`${this.BASE_URL}/vagas`, {
+      headers: this.getAuthHeaders()
+    });
   }
-
   /** Busca uma vaga pelo ID */
   buscarVaga(id: number): Observable<VagaAPI> {
-    return this.http.get<VagaAPI>(`${this.BASE_URL}/vagas/${id}`);
+    return this.http.get<VagaAPI>(`${this.BASE_URL}/vagas/${id}`, {
+      headers: this.getAuthHeaders()
+    });
   }
 
   /**
@@ -128,38 +163,43 @@ export class ApiService {
     autorId: number;
   }): Observable<VagaAPI> {
     const payload: VagaAPI = {
-      titulo:              vaga.titulo,
-      descricao:           vaga.descricao,
-      nomeEmpresa:         vaga.nomeEmpresa,
-      endereco:            vaga.endereco,
-      tempoMedioEstimado:  vaga.tempoMedioEstimado,
-      lat:                 vaga.lat ?? 0,
-      lng:                 vaga.lng ?? 0,
-      status:              'ABERTA',
-      autor:               { id: vaga.autorId }
+      titulo: vaga.titulo,
+      descricao: vaga.descricao,
+      nomeEmpresa: vaga.nomeEmpresa,
+      endereco: vaga.endereco,
+      tempoMedioEstimado: vaga.tempoMedioEstimado,
+      lat: vaga.lat ?? 0,
+      lng: vaga.lng ?? 0,
+      status: 'ABERTA',
+      autor: { id: vaga.autorId }
     };
-    return this.http.post<VagaAPI>(`${this.BASE_URL}/vagas`, payload);
+
+    return this.http.post<VagaAPI>(`${this.BASE_URL}/vagas`, payload, {
+      headers: this.getAuthHeaders()
+    });
   }
 
   /** Atualiza título, descrição e endereço de uma vaga */
   atualizarVaga(id: number, dados: Partial<VagaAPI>): Observable<VagaAPI> {
-    return this.http.put<VagaAPI>(`${this.BASE_URL}/vagas/${id}`, dados);
+    return this.http.put<VagaAPI>(`${this.BASE_URL}/vagas/${id}`, dados, {
+      headers: this.getAuthHeaders()
+    });
   }
-
   /** Remove uma vaga */
   deletarVaga(id: number): Observable<string> {
     return this.http.delete(`${this.BASE_URL}/vagas/${id}`, {
+      headers: this.getAuthHeaders(),
       responseType: 'text'
     });
   }
 
   /** Lista os candidatos de uma vaga */
-  listarCandidatos(vagaId: number): Observable<CandidatoAPI[]> {
-    return this.http.get<CandidatoAPI[]>(
-      `${this.BASE_URL}/vagas/${vagaId}/candidatos`
-    );
-  }
 
+  listarCandidatos(vagaId: number): Observable<CandidatoAPI[]> {
+    return this.http.get<CandidatoAPI[]>(`${this.BASE_URL}/vagas/${vagaId}/candidatos`, {
+      headers: this.getAuthHeaders()
+    });
+  }
   /**
    * Endpoint de candidatura (usado pelo lado mobile/empregado).
    * Mantido aqui para completude.
@@ -189,11 +229,10 @@ export class ApiService {
     return this.http.get<VagaAPI[]>(`${this.BASE_URL}/candidatos/${candidatoId}/vagas-aplicadas`);
   }
   // api.service.ts
-avaliarCandidato(candidatoId: number, nota: number): Observable<string> {
-  return this.http.put(
-    `${this.BASE_URL}/candidatos/${candidatoId}/avaliar`,
-    { nota },
-    { responseType: 'text' }
-  );
-}
+  avaliarCandidato(candidatoId: number, nota: number): Observable<string> {
+    return this.http.put(`${this.BASE_URL}/candidatos/${candidatoId}/avaliar`, { nota }, {
+      headers: this.getAuthHeaders(),
+      responseType: 'text'
+    });
+  }
 }

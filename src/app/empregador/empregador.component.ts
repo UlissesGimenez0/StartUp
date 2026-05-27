@@ -291,8 +291,10 @@ carregarVagas(): void {
     this.posicaoSelecionada = null;
   }
 
-  logout(): void {
-    localStorage.removeItem('loggedInUser');
-    this.router.navigate(['/login']);
-  }
+logout(): void {
+  localStorage.removeItem('loggedInUser');
+  localStorage.removeItem('token');
+  localStorage.removeItem('userRole');
+  this.router.navigate(['/login']);
+}
 }

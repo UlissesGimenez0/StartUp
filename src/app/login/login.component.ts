@@ -25,34 +25,25 @@ export class LoginComponent {
 
   // Role controlada diretamente aqui — sem depender do localStorage
   role: 'CANDIDATO' | 'EMPREGADOR' = 'CANDIDATO';
+  
+login() {
+  this.carregando = true;
 
-  login() {
-    this.carregando = true;
+  this.api.login(this.user.email, this.user.senha, this.role).subscribe({
+    next: (response) => {
+      this.loginValid = true;
+      this.carregando = false;
 
-    console.log('Enviando login com role:', this.role); // confirma no console
-
-    this.api.login(this.user.email, this.user.senha, this.role).subscribe({
-      next: ({ id }) => {
-        this.loginValid = true;
-        this.carregando = false;
-
-        localStorage.setItem('loggedInUser', JSON.stringify({
-          id,
-          email: this.user.email,
-          nome:  this.user.email.split('@')[0],
-          role:  this.role
-        }));
-
-        if (this.role === 'EMPREGADOR') {
-          this.router.navigate(['/dashboard-empregador']);
-        } else {
-          this.router.navigate(['/dashboard-empregado']); 
-        }
-      },
-      error: () => {
-        this.loginValid = false;
-        this.carregando = false;
+      if (response.perfil === 'EMPREGADOR') {
+        this.router.navigate(['/dashboard-empregador']);
+      } else {
+        this.router.navigate(['/dashboard-empregado']);
       }
-    });
-  }
+    },
+    error: () => {
+      this.loginValid = false;
+      this.carregando = false;
+    }
+  });
+}
 }
